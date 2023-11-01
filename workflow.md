@@ -40,22 +40,14 @@ python ./train_census.py
 python ./train_credit.py
 ```
 
-## 3. Global generation
+## 3. Comparison experiments with baseline
 ```
 ```
 
-## 4. Local generation
+## 4. Retraining
 ```
 ```
 
-## 5. Retraining
-```
-```
-
-## 6. Model evaluation
-```
-```
-
-## 7. Comparison experiment with baseline
+## 5. Model evaluation
 ```
 ```
