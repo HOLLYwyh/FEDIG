@@ -29,7 +29,7 @@ Then we use the dataset to train three DNN models.
 ```
 - First, we need to split the data we preprocessed into training dataset and test dataset.
 - Second, we need to set the corresponding hyperparameters and train the neural network.
-- Third, we need to save the models after training.
+- Third, we need to save the models after training. Also, we need to evaluate the model.
 
 ```shell
 # Please make sure you are at path: /training
