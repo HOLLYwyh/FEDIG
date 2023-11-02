@@ -40,14 +40,27 @@ python ./train_census.py
 python ./train_credit.py
 ```
 
-## 3. Comparison experiments with baseline
+## 3. Cluster
+```
+Before generation, we need to do some preparatory work.
+```
+- In this part, we use K-Means algorithm to divide the dataset into clusters.
+
+```shell
+# Please make sure you are at path: /clusters
+# The run the follow command:
+
+python ./cluster.py
+```
+
+## 4. Comparison experiments with baseline
 ```
 ```
 
-## 4. Retraining
+## 5. Retraining
 ```
 ```
 
-## 5. Model evaluation
+## 6. Model evaluation
 ```
 ```
