@@ -6,7 +6,6 @@ The source code of EIDIG can be accessed at https://github.com/LingfengZhang98/E
 import sys
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
 sys.path.append('..')
 from utils import utils
 
@@ -54,25 +53,22 @@ def global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, d
 def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, update_interval, s_l, epsilon):
     direction = [-1, 1]
     l_id = np.empty(shape=(0, num_attrs))
+    p0 = np.empty(shape=(0, num_attrs))
+    p = np.empty(shape=(0, num_attrs))
 
     for x1 in g_id:
         x0 = x1.copy()
-        similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
-        x2 = utils.argmax(x1, similar_x1_set, model)
-        grad1 = compute_grad(x1, model)
-        grad2 = compute_grad(x2, model)
-        p = utils.normalization(grad1, grad2, protected_attrs, epsilon)
-        p0 = p.copy()
-        suc_iter = 0
+        counts = update_interval
         for _ in range(l_num):
-            if suc_iter >= update_interval:
+            if counts == update_interval:
                 similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
                 x2 = utils.find_idi_pair(x1, similar_x1_set, model)
                 grad1 = compute_grad(x1, model)
                 grad2 = compute_grad(x2, model)
                 p = utils.normalization(grad1, grad2, protected_attrs, epsilon)
-                suc_iter = 0
-            suc_iter += 1
+                p0 = p.copy()
+                counts = 0
+            counts += 1
             a = utils.random_pick(p)
             x1[a] = x1[a] + direction[utils.random_pick([0.5, 0.5])] * s_l
             x1 = utils.clip(x1, constraint)
@@ -82,7 +78,7 @@ def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model,
             else:
                 x1 = x0.copy()
                 p = p0.copy()
-                suc_iter = 0
+                counts = 0
 
     l_id = np.array(list(set([tuple(i) for i in l_id])))
     return l_id
