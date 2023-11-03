@@ -2,3 +2,102 @@
 This file will reproduce the algorithm EIDIG, one state-of-art individual discrimination generation algorithm.
 The source code of EIDIG can be accessed at https://github.com/LingfengZhang98/EIDIG
 """
+
+import sys
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+sys.path.append('..')
+from utils import utils
+
+
+# compute the gradient of model predictions w.r.t input attributes
+def compute_grad(x, model):
+    x = tf.constant([x], dtype=tf.float32)
+    with tf.GradientTape() as tape:
+        tape.watch(x)
+        y_predict = model(x)
+    gradient = tape.gradient(y_predict, x)
+    return gradient[0].numpy() if model(x) > 0.5 else -gradient[0].numpy()
+
+
+# global generation of EIDIG
+def global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g):
+    g_id = np.empty(shape=(0, num_attrs))
+    g_num = len(seeds)
+
+    for i in range(g_num):
+        x1 = seeds[i].copy()
+        grad1 = np.zeros_like(x[0]).astype(float)
+        grad2 = np.zeros_like(x[0]).astype(float)
+        for _ in range(max_iter):
+            similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+            if utils.is_discriminatory(x1, similar_x1_set, model):
+                g_id = np.append(g_id, [x1], axis=0)
+                break
+            x2 = utils.argmax(x1, similar_x1_set, model)
+            grad1 = decay * grad1 + compute_grad(x1, model)
+            grad2 = decay * grad2 + compute_grad(x2, model)
+            direction = np.zeros_like(x[0])
+            sign_grad1 = np.sign(grad1)
+            sign_grad2 = np.sign(grad2)
+            for attr in range(num_attrs):
+                if attr not in protected_attrs and sign_grad1[attr] == sign_grad2[attr]:
+                    direction[attr] = (-1) * sign_grad1[attr]
+            x1 = x1 + s_g * direction
+            x1 = utils.clip(x1, constraint)
+    g_id = np.array(list(set([tuple(i) for i in g_id])))
+    return g_id
+
+
+# local generation of EIDIG
+def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, update_interval, s_l, epsilon):
+    direction = [-1, 1]
+    l_id = np.empty(shape=(0, num_attrs))
+
+    for x1 in g_id:
+        x0 = x1.copy()
+        similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+        x2 = utils.argmax(x1, similar_x1_set, model)
+        grad1 = compute_grad(x1, model)
+        grad2 = compute_grad(x2, model)
+        p = utils.normalization(grad1, grad2, protected_attrs, epsilon)
+        p0 = p.copy()
+        suc_iter = 0
+        for _ in range(l_num):
+            if suc_iter >= update_interval:
+                similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+                x2 = utils.find_idi_pair(x1, similar_x1_set, model)
+                grad1 = compute_grad(x1, model)
+                grad2 = compute_grad(x2, model)
+                p = utils.normalization(grad1, grad2, protected_attrs, epsilon)
+                suc_iter = 0
+            suc_iter += 1
+            a = utils.random_pick(p)
+            x1[a] = x1[a] + direction[utils.random_pick([0.5, 0.5])] * s_l
+            x1 = utils.clip(x1, constraint)
+            similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+            if utils.is_discriminatory(x1, similar_x1_set, model):
+                l_id = np.append(l_id, [x1], axis=0)
+            else:
+                x1 = x0.copy()
+                p = p0.copy()
+                suc_iter = 0
+
+    l_id = np.array(list(set([tuple(i) for i in l_id])))
+    return l_id
+
+
+# complete IDI generation of EIDIG
+def individual_discrimination_generation(x, seeds, protected_attrs, constraint, model, decay, l_num, update_interval, max_iter=10, s_g=1.0, s_l=1.0, epsilon=1e-6):
+    num_attrs = len(x[0])
+    g_id = global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g)
+    l_id = local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, update_interval, s_l, epsilon)
+    all_id = np.append(g_id, l_id, axis=0)
+    non_duplicate_all_id = np.array(list(set([tuple(i) for i in all_id])))
+    return non_duplicate_all_id
+
+
+
+
+

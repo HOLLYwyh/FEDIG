@@ -53,8 +53,33 @@ def global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, m
 def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, s_l, epsilon):
     direction = [-1, 1]
     l_id = np.empty(shape=(0, num_attrs))
+    for x1 in g_id:
+        x0 = x1.copy()
+        for _ in range(l_num):
+            similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+            x2 = utils.find_idi_pair(x1, similar_x1_set, model)
+            grad1 = compute_grad(x1, model)
+            grad2 = compute_grad(x2, model)
+            p = utils.normalization(grad1, grad2, protected_attrs, epsilon)
+            a = utils.random_pick(p)
+            d = direction[utils.random_pick([0.5, 0.5])]
+            x1[a] = x1[a] + d * s_l
+            x1 = utils.clip(x1, constraint)
+            similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+            if utils.is_discriminatory(x1, similar_x1_set, model):
+                l_id = np.append(l_id, [x1], axis=0)
+            else:
+                x1 = x0.copy()
+    l_id = np.array(list(set([tuple(i) for i in l_id])))
+    return l_id
 
 
-# IDI generation
-def individual_discrimination_generation():
-    pass
+# complete IDI generation of ADF
+def individual_discrimination_generation(x, seeds, protected_attrs, constraint, model, l_num, max_iter=10, s_g=1.0, s_l=1.0, epsilon=1e-6):
+    num_attrs = len(x[0])
+    g_id = global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, max_iter, s_g)
+    l_id = local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, s_l, epsilon)
+    all_id = np.append(g_id, l_id, axis=0)
+    non_duplicate_all_id = np.array(list(set([tuple(i) for i in all_id])))
+    return non_duplicate_all_id
+

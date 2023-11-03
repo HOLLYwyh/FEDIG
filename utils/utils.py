@@ -1,5 +1,6 @@
 """
-This file provides the essential functions for individual discrimination generation.
+- This file provides the essential functions for individual discrimination generation.
+- For ADF and EIDIG
 """
 
 import itertools
@@ -49,3 +50,38 @@ def argmax(x, similar_x_set, model):
 def clip(instance, constraint):
     return np.minimum(constraint[:, 1], np.maximum(constraint[:, 0], instance))
 
+
+# randomly pick an element from a probability distribution
+def random_pick(probability):
+    random_number = np.random.rand()
+    current_probability = 0
+    for i in range(len(probability)):
+        current_probability += probability[i]
+        if current_probability > random_number:
+            return i
+
+
+# find a discriminatory pair given an individual discriminatory instance
+def find_idi_pair(x, similar_x_set, model):
+    pairs = np.empty(shape=(0, len(x)))
+    y_predict = (model(tf.constant([x])) > 0.5)
+    for x_pair in similar_x_set:
+        if (model(tf.constant[x_pair]) > 0.5) != y_predict:
+            pairs = np.append(pairs, [x_pair], axis=0)
+    selected_index = random_pick([1.0 / pairs.shape[0]] * pairs.shape[0])
+    return pairs[selected_index]
+
+
+# gradient normalization during local search
+def normalization(grad1, grad2, protected_attrs, epsilon):
+    gradient = np.zeros_like(grad1)
+    grad1 = np.abs(grad1)
+    grad2 = np.abs(grad2)
+    for i in range(len(gradient)):
+        saliency = grad1[i] + grad2[i]
+        gradient[i] = 1.0 / (saliency + epsilon)
+        if i in protected_attrs:
+            gradient[i] = 0.0
+    gradient_sum = np.sum(gradient)
+    probability = gradient / gradient_sum
+    return probability
