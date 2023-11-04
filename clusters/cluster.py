@@ -28,9 +28,9 @@ bank_kmeans = KMeans(n_clusters=c_num).fit(bank_data)
 census_kmeans = KMeans(n_clusters=c_num).fit(census_data)
 credit_kmeans = KMeans(n_clusters=c_num).fit(credit_data)
 
-bank_cluster = {'data': bank_data, 'cluster_labels': bank_kmeans.labels_}
-census_cluster = {'data': census_data, 'cluster_labels': census_kmeans.labels_}
-credit_cluster = {'data': credit_data, 'cluster_labels': credit_kmeans.labels_}
+bank_cluster = {'X': bank_data[:, :-1], 'Y': bank_data[:, -1],'cluster_labels': bank_kmeans.labels_}
+census_cluster = {'X': census_data[:, :-1], 'Y': census_data[:, -1], 'cluster_labels': census_kmeans.labels_}
+credit_cluster = {'X': credit_data[:, 1:], 'Y': credit_data[:, 0], 'cluster_labels': credit_kmeans.labels_}
 
 # save the clusters
 joblib.dump(bank_cluster, 'bank.pkl')
