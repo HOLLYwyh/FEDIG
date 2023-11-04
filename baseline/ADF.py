@@ -56,7 +56,7 @@ def global_generation(seeds, y_real, num_attrs, protected_attrs, constraint, mod
 def local_generation(num_attrs, l_num, g_id, g_y, protected_attrs, constraint, model, s_l, epsilon):
     direction = [-1, 1]
     l_id = np.empty(shape=(0, num_attrs))
-    for x1, y in g_id, g_y:
+    for x1, y in zip(g_id, g_y):
         for _ in range(l_num):
             similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
             x2 = utils.find_idi_pair(x1, similar_x1_set, model)
