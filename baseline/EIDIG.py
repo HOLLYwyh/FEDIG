@@ -21,14 +21,14 @@ def compute_grad(x, model):
 
 
 # global generation of EIDIG
-def global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g):
+def global_generation(seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g):
     g_id = np.empty(shape=(0, num_attrs))
     g_num = len(seeds)
 
     for i in range(g_num):
         x1 = seeds[i].copy()
-        grad1 = np.zeros_like(x[0]).astype(float)
-        grad2 = np.zeros_like(x[0]).astype(float)
+        grad1 = np.zeros_like(x1).astype(float)
+        grad2 = np.zeros_like(x1).astype(float)
         for _ in range(max_iter):
             similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
             if utils.is_discriminatory(x1, similar_x1_set, model):
@@ -37,7 +37,7 @@ def global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, d
             x2 = utils.argmax(x1, similar_x1_set, model)
             grad1 = decay * grad1 + compute_grad(x1, model)
             grad2 = decay * grad2 + compute_grad(x2, model)
-            direction = np.zeros_like(x[0])
+            direction = np.zeros_like(x1)
             sign_grad1 = np.sign(grad1)
             sign_grad2 = np.sign(grad2)
             for attr in range(num_attrs):
@@ -85,9 +85,9 @@ def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model,
 
 
 # complete IDI generation of EIDIG
-def individual_discrimination_generation(x, seeds, protected_attrs, constraint, model, decay, l_num, update_interval, max_iter=10, s_g=1.0, s_l=1.0, epsilon=1e-6):
-    num_attrs = len(x[0])
-    g_id = global_generation(x, seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g)
+def individual_discrimination_generation(seeds, protected_attrs, constraint, model, decay, l_num, update_interval, max_iter=10, s_g=1.0, s_l=1.0, epsilon=1e-6):
+    num_attrs = len(seeds[0])
+    g_id = global_generation(seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g)
     l_id = local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, update_interval, s_l, epsilon)
     all_id = np.append(g_id, l_id, axis=0)
     non_duplicate_all_id = np.array(list(set([tuple(i) for i in all_id])))
