@@ -103,7 +103,6 @@ def individual_discrimination_generation(dataset_name, config, model, c_num=4):
                                 l_num=10, s_l=1.0, epsilon=1e-6)
         part_id = np.append(g_id, l_id, axis=0)
         all_id = np.append(all_id, part_id, axis=0)
-        break
 
     all_id = np.array(list(set([tuple(i) for i in all_id])))
     return all_id
