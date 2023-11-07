@@ -4,6 +4,7 @@ The source code of EIDIG can be accessed at https://github.com/LingfengZhang98/E
 """
 
 import sys
+import joblib
 import numpy as np
 import tensorflow as tf
 sys.path.append('..')
@@ -50,7 +51,7 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, deca
 
 
 # local generation of EIDIG
-def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, update_interval, s_l, epsilon):
+def local_generation(num_attrs, g_id, protected_attrs, constraint, model, update_interval, l_num, s_l, epsilon):
     direction = [-1, 1]
     l_id = np.empty(shape=(0, num_attrs))
     p0 = np.empty(shape=(0, num_attrs))
@@ -85,13 +86,31 @@ def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model,
 
 
 # complete IDI generation of EIDIG
-def individual_discrimination_generation(seeds, protected_attrs, constraint, model, decay, l_num, update_interval, max_iter=10, s_g=1.0, s_l=1.0, epsilon=1e-6):
-    num_attrs = len(seeds[0])
-    g_id = global_generation(seeds, num_attrs, protected_attrs, constraint, model, decay, max_iter, s_g)
-    l_id = local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, update_interval, s_l, epsilon)
-    all_id = np.append(g_id, l_id, axis=0)
-    non_duplicate_all_id = np.array(list(set([tuple(i) for i in all_id])))
-    return non_duplicate_all_id
+def individual_discrimination_generation(dataset_name, config, model, c_num=4):
+    data_path = '../clusters/' + dataset_name + '.pkl'
+    cluster_data = joblib.load(data_path)
+    x = cluster_data['X']
+    labels = cluster_data['cluster_labels']
+
+    num_attrs = len(x[0])
+    all_id = np.empty(shape=(0, num_attrs))
+    clusters = [[] for _ in range(c_num)]
+    for i, label in enumerate(labels):
+        clusters[label].append(x[i])
+
+    for i in range(len(clusters)):
+        g_id = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint, model,
+                                 decay=0.5, max_iter=10, s_g=1.0)
+        l_id = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint, model,
+                                update_interval=2, l_num=10,  s_l=1.0, epsilon=1e-6)
+        part_id = np.append(g_id, l_id, axis=0)
+        all_id = np.append(all_id, part_id, axis=0)
+
+        break
+
+    all_id = np.array(list(set([tuple(i) for i in all_id])))
+    return all_id
+
 
 
 
