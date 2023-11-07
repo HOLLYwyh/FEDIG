@@ -73,8 +73,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, new_mo
     neuron_num = len(neurons)
     r = np.zeros(neuron_num, dtype=int)
 
-    for x0 in g_id:
-        x1 = x0.copy()
+    for x1 in g_id:
         similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
         x2 = utils.find_idi_pair(x1, similar_x1_set, model)
         grad1 = np.zeros_like(x1).astype(float)
@@ -94,6 +93,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, new_mo
                     if p_tmp < p_direction[attr]:
                         x1[attr] = x1[attr] + direction[attr] * s_l
             x1 = utils.clip(x1, constraint)
+            similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
             found, x3 = utils.create_idi_pair(x1, similar_x1_set, model)
             if found:
                 l_id = np.append(l_id, [x1], axis=0)
