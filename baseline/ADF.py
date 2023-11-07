@@ -4,6 +4,7 @@ The source code of ADF can be accessed at https://github.com/pxzhang94/ADF
 """
 
 import sys
+import joblib
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -14,13 +15,13 @@ from utils import utils
 # compute the gradient of loss function w.r.t input attributes
 def compute_grad(x, model, y=None, loss_func=keras.losses.binary_crossentropy):
     x = tf.constant([x], dtype=tf.float32)
-    y_predict = model(x)
-    if y is None:
-        y = tf.cast(y_predict > 0.5, dtype=tf.float32)
-    else:
-        y = tf.constant([y], dtype=tf.float32)
     with tf.GradientTape() as tape:
         tape.watch(x)
+        y_predict = model(x)
+        if y is None:
+            y = tf.cast(y_predict > 0.5, dtype=tf.float32)
+        else:
+            y = tf.constant([[y]], dtype=tf.float32)
         loss = loss_func(y_predict, y)
     gradient = tape.gradient(loss, x)
     return gradient[0].numpy()
@@ -55,11 +56,12 @@ def global_generation(seeds, y_real, num_attrs, protected_attrs, constraint, mod
 
 
 # local_generation of ADF
-def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, s_l, epsilon):
+def local_generation(num_attrs, g_id, protected_attrs, constraint, model, l_num, s_l, epsilon):
     direction = [-1, 1]
     l_id = np.empty(shape=(0, num_attrs))
     for x1 in g_id:
         for _ in range(l_num):
+            x1_copy = x1.copy()
             similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
             x2 = utils.find_idi_pair(x1, similar_x1_set, model)
             grad1 = compute_grad(x1, model)
@@ -72,15 +74,38 @@ def local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model,
             similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
             if utils.is_discriminatory(x1, similar_x1_set, model):
                 l_id = np.append(l_id, [x1], axis=0)
+            else:
+                x1 = x1_copy
     l_id = np.array(list(set([tuple(i) for i in l_id])))
     return l_id
 
 
 # complete IDI generation of ADF
-def individual_discrimination_generation(seeds, y_real, protected_attrs, constraint, model, l_num, max_iter=10, s_g=1.0, s_l=1.0, epsilon=1e-6):
-    num_attrs = len(seeds[0])
-    g_id = global_generation(seeds, y_real, num_attrs, protected_attrs, constraint, model, max_iter, s_g)
-    l_id = local_generation(num_attrs, l_num, g_id, protected_attrs, constraint, model, s_l, epsilon)
-    all_id = np.append(g_id, l_id, axis=0)
-    non_duplicate_all_id = np.array(list(set([tuple(i) for i in all_id])))
-    return non_duplicate_all_id
+def individual_discrimination_generation(dataset_name, config, model, c_num=4):
+    data_path = '../clusters/' + dataset_name + '.pkl'
+    cluster_data = joblib.load(data_path)
+    x = cluster_data['X']
+    y = cluster_data['Y']
+    labels = cluster_data['cluster_labels']
+
+    num_attrs = len(x[0])
+    all_id = np.empty(shape=(0, num_attrs))
+    clusters = [[] for _ in range(c_num)]
+    y_reals = [[] for _ in range(c_num)]
+    for i, label in enumerate(labels):
+        clusters[label].append(x[i])
+        y_reals[label].append(y[i])
+
+    for i in range(len(clusters)):
+        g_id = global_generation(clusters[i], y_reals[i], num_attrs, config.protected_attrs, config.constraint, model,
+                                 max_iter=10, s_g=1.0)
+        l_id = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint, model,
+                                l_num=10, s_l=1.0, epsilon=1e-6)
+        part_id = np.append(g_id, l_id, axis=0)
+        all_id = np.append(all_id, part_id, axis=0)
+        break
+
+    all_id = np.array(list(set([tuple(i) for i in all_id])))
+    return all_id
+
+
