@@ -4,7 +4,6 @@ The source code of FEDIG can be accessed at
 """
 
 import sys
-import time
 import joblib
 import numpy as np
 import tensorflow as tf
@@ -87,12 +86,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 
 # complete IDI generation of FEDIG
-def individual_discrimination_generation(dataset_name, config, model, c_num=4, delta1=0.20, delta2=0.20):
-    print("Algorithm start......")
-    start_time = time.time()
-
-    global_time_cost = 0.0
-    local_time_cost = 0.0
+def individual_discrimination_generation(dataset_name, config, model, c_num=4, min_len=1000, delta1=0.10, delta2=0.20):
 
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
@@ -101,47 +95,26 @@ def individual_discrimination_generation(dataset_name, config, model, c_num=4, d
 
     num_attrs = len(x[0])
     all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
-                                                           config.protected_attrs, config.constraint)
+                                                           config.protected_attrs, config.constraint, min_len)
     irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features, delta1, delta2)
-    explain_time = time.time() - start_time
 
     all_id = np.empty(shape=(0, num_attrs))
     clusters = [[] for _ in range(c_num)]
     for i, label in enumerate(labels):
         clusters[label].append(x[i])
 
-    generate_start_time = time.time()
-
     for i in range(len(clusters)):
-        print('Round number: ', i+1)
         g_id = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint, model,
                                  optimal_features, decay=0.5, max_iter=10, s_g=1.0)
-
-        global_time_cost += (time.time() - generate_start_time)
-        generate_start_time = time.time()
 
         l_id = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint, model,
                                 irrelevant_features, decay=0.5, s_l=1.0)
 
-        local_time_cost += (time.time() - generate_start_time)
-        generate_start_time = time.time()
-
         part_id = np.append(g_id, l_id, axis=0)
         all_id = np.append(all_id, part_id, axis=0)
 
-        print('Round finished...')
-
     all_id = np.array(list(set([tuple(i) for i in all_id])))
 
-    end_time = time.time()
-    execution_time = end_time - start_time
-
-    print('Explain time:', explain_time)
-    print('Algorithm Total time:', execution_time)
-    print('Global generation time:', global_time_cost)
-    print('Local generation time:', local_time_cost)
-
-    print('Algorithm finished......')
     return all_id
 
 

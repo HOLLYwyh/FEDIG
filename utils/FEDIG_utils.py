@@ -11,7 +11,7 @@ from itertools import product
 
 
 # sort the features via sensitivity
-def sort_biased_features(data, num_attrs, model, protected_attrs, constraint):
+def sort_biased_features(data, num_attrs, model, protected_attrs, constraint, min_len):
     biased_features_list = []
     sensitive_features_list = []
     attr_list = []
@@ -20,7 +20,7 @@ def sort_biased_features(data, num_attrs, model, protected_attrs, constraint):
         if attr not in protected_attrs:
             attr_list.append(attr)
 
-    data_len = min(len(data), 1000)
+    data_len = min(len(data), min_len)
     random_indices = random.sample(range(len(data)), data_len)
     data = data[random_indices]
 
