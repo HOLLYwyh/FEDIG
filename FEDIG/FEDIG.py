@@ -2,7 +2,7 @@
 This file will implement the algorithm FEDIG, feature base explainable.
 The source code of FEDIG can be accessed at
 """
-import random
+
 import sys
 import time
 import joblib
