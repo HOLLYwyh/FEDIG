@@ -114,7 +114,7 @@ def fairness_testing(clusters, num_attrs, protected_attrs, constraint, model, le
 
 
 # complete IDI generation of DICE
-def individual_discrimination_generation(dataset_name, config, model, c_num=4, timeout=60):
+def individual_discrimination_generation(dataset_name, config, model, c_num=4, timeout=600):
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
     x = cluster_data['X']

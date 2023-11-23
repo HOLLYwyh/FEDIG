@@ -48,10 +48,8 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, new_
                 random_indices = np.random.choice(neuron_num, int(p_r * neuron_num), replace=False)
                 r[random_indices] = 1
             similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
-            found, pair = utils.create_idi_pair(x1, similar_x1_set, model)
-            if found:
+            if utils.is_discriminatory(x1, similar_x1_set, model):
                 g_id = np.append(g_id, [x1], axis=0)
-                g_id = np.append(g_id, [pair], axis=0)
                 break
             x2 = utils.argmax(x1, similar_x1_set, model)
             grad1 = decay * grad1 + compute_grad(x1, x2, new_model, neurons, r)
@@ -74,14 +72,16 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, new_mo
     r = np.zeros(neuron_num, dtype=int)
 
     for x1 in g_id:
-        similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
-        x2 = utils.find_idi_pair(x1, similar_x1_set, model)
         grad1 = np.zeros_like(x1).astype(float)
         grad2 = np.zeros_like(x1).astype(float)
         for _ in range(l_num):
+            x1_copy = x1.copy()
             if s_l % r_l == 0:
                 random_indices = np.random.choice(neuron_num, int(p_r * neuron_num), replace=False)
                 r[random_indices] = 1
+
+            similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
+            x2 = utils.find_idi_pair(x1, similar_x1_set, model)
             grad1 = decay * grad1 + compute_grad(x1, x2, new_model, neurons, r)
             grad2 = decay * grad2 + compute_grad(x2, x1, new_model, neurons, r)
             direction = np.sign(grad1 + grad2)
@@ -94,14 +94,11 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, new_mo
                         x1[attr] = x1[attr] + direction[attr] * s_l
             x1 = utils.clip(x1, constraint)
             similar_x1_set = utils.get_similar_set(x1, num_attrs, protected_attrs, constraint)
-            found, x3 = utils.create_idi_pair(x1, similar_x1_set, model)
-            if found:
+            if utils.is_discriminatory(x1, similar_x1_set, model):
                 l_id = np.append(l_id, [x1], axis=0)
-                l_id = np.append(l_id, [x3], axis=0)
-                x2 = x3.copy()
             else:
-                x2 = utils.argmax(x1, similar_x1_set, model)
-
+                x1 = x1_copy
+    l_id = np.array(list(set([tuple(i) for i in l_id])))
     return l_id
 
 
