@@ -2,17 +2,14 @@ import sys
 import time
 import numpy as np
 import pandas as pd
-import ADF
-import DICE
-import EIDIG
-import NeuronFair
 import tensorflow as tf
 from tensorflow import keras
-from utils import config
-from FEDIG import FEDIG
-from tensorflow.keras.models import load_model, Model
+from tensorflow.keras.models import load_model
 
 sys.path.append('..')
+from FEDIG import FEDIG
+from baseline import ADF, DICE, NeuronFair
+from utils import config
 from utils import FEDIG_utils
 from utils import utils
 
@@ -52,16 +49,16 @@ model = load_model(path)
 
 
 # easy test for FEDIG
-all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model)
-print("==================len(all_id)=======================")
-print(len(all_id))
-
-
-# start_time = time.time()
-# all_id = DICE.individual_discrimination_generation('credit', config.Credit, model)
-# end_time = time.time()
-# execution_time = end_time - start_time
+# all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model)
 # print("==================len(all_id)=======================")
 # print(len(all_id))
-# print('Algorithm Total time:', execution_time)
+
+
+start_time = time.time()
+all_id = DICE.individual_discrimination_generation('credit', config.Credit, model, c_num=4, timeout=300)
+end_time = time.time()
+execution_time = end_time - start_time
+print("==================len(all_id)=======================")
+print(len(all_id))
+print('Algorithm Total time:', execution_time)
 
