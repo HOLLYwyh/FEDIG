@@ -1,2 +1,2 @@
-# VeriNeuron
-Neuron network fairness testing of biased neuron
+# FEDIG
+Features based Explainable individual Discriminatory Instances Generator
