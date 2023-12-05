@@ -10,7 +10,7 @@ from utils import utils
 from itertools import product
 
 
-# sort the features via sensitivity
+# sort the features via FDB (feature biased degree)
 def sort_biased_features(data, num_attrs, model, protected_attrs, constraint, min_len):
     biased_features_list = []
     sensitive_features_list = []

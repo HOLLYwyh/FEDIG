@@ -86,7 +86,8 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 
 # complete IDI generation of FEDIG
-def individual_discrimination_generation(dataset_name, config, model, c_num=4, min_len=1000, delta1=0.10, delta2=0.20):
+def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
+                                         c_num=4, min_len=1000, delta1=0.10, delta2=0.20):
 
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
@@ -105,10 +106,10 @@ def individual_discrimination_generation(dataset_name, config, model, c_num=4, m
 
     for i in range(len(clusters)):
         g_id = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint, model,
-                                 optimal_features, decay=0.5, max_iter=10, s_g=1.0)
+                                 optimal_features, decay, max_iter=10, s_g=1.0)
 
         l_id = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint, model,
-                                irrelevant_features, decay=0.5, s_l=1.0)
+                                irrelevant_features, decay, s_l=1.0)
 
         part_id = np.append(g_id, l_id, axis=0)
         all_id = np.append(all_id, part_id, axis=0)
