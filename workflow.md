@@ -63,10 +63,24 @@ Some experiments of our algorithm and baselines.
 In this part, we do some experiments of our algorithm FEDIG and baselines, 
 which can prove that our algorithm is actually better than them.
 
+**Notice:**  
+1. **All the results of experiments are stored in folder */experiments/logfile*
+ , so please clear all the *.csv* files before running the experiments.**
+2. **Each experiment just run one time, in the paper we actually run five times and
+calculate the average result of them. So if you want to get an accurate result, please run five times (or more) per experiment.**
+
 -  First, we need to conduct some experiments to determine the parameters of our algorithm.
 -  Second, we compare our algorithm FEDIG with baselines in five aspects.
 
-
+```shell
+# Please make sure that you are at path : /experiments
+# 1.1 eta (η) of FEDIG
+python .\parameter\eta.py
+# 1.2 feature factors of FEDIG
+python .\parameter\feature_factor.py
+# 1.3 min_len of FEDIG
+python .\parameter\min_len.py
+```
 ## 5. Retraining
 ```
 ```

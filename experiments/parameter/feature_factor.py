@@ -1,7 +1,7 @@
 """
- This paper will determine the parameter η through experiments.
- - The value of η can be: 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6
- - 0.7, 0.8, 0.9, 1.0
+    The percentage of biased features and irrelevant features.
+    The values of factors (biased, irrelevant) can be:
+    (0.10, 0.10), (0.10,0.15), (0.10,0.20), (0.15,0.15), (0.15, 0.20), (0.20, 0.20)
 """
 
 import sys
@@ -23,20 +23,21 @@ data = df.values[:, 1:]
 model = load_model(path)
 
 # save the logging data
-file_path = 'logfile/parameter/eta.csv'
+file_path = 'logfile/parameter/feature_factor.csv'
 try:
     df = pd.read_csv(file_path)
 except FileNotFoundError:
     df = pd.DataFrame(columns=['number', 'time'])
 
 # experiment begins
-for i in range(0, 11):
+factor_list = [(0.1, 0.1), (0.1, 0.15), (0.1, 0.2), (0.15, 0.15), (0.15, 0.2), (0.2, 0.2)]
+for delta1, delta2 in factor_list:
     start_time = time.time()
-    decay = i * 0.1
-    all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model, decay=decay)
+    all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model, decay=0.1,
+                                                        c_num=4, min_len=1000, delta1=delta1, delta2=delta2)
     end_time = time.time()
     execution_time = end_time - start_time
-    print(f"=======================Round{i+1}=======================")
+    print(f"================={delta1}, {delta2}=================")
     print(len(all_id))
     print(execution_time)
 
@@ -46,3 +47,4 @@ for i in range(0, 11):
 df = df.append(pd.DataFrame({'number': ['-'], 'time': ['-']}, index=[0]), ignore_index=True)
 df.to_csv(file_path, index=False)
 # experiment ends
+
