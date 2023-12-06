@@ -85,6 +85,6 @@ python .\parameter\min_len.py
 ```
 ```
 
-## 6. Model evaluation
+## 6. Algorithm Evaluation
 ```
 ```
