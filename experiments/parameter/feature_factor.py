@@ -33,7 +33,7 @@ except FileNotFoundError:
 factor_list = [(0.1, 0.1), (0.1, 0.15), (0.1, 0.2), (0.15, 0.15), (0.15, 0.2), (0.2, 0.2)]
 for delta1, delta2 in factor_list:
     start_time = time.time()
-    all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model, decay=0.1,
+    all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model, decay=0.2,
                                                         c_num=4, min_len=1000, delta1=delta1, delta2=delta2)
     end_time = time.time()
     execution_time = end_time - start_time

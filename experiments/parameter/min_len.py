@@ -12,12 +12,12 @@ sys.path.append('..')
 from FEDIG import FEDIG
 from utils import config
 
-# use bank dataset as example
-path = '../models/trained_models/bank_model.h5'
-data_path = '../datasets/bank'
+# use credit dataset as example
+path = '../models/trained_models/credit_model.h5'
+data_path = '../datasets/credit'
 
 df = pd.read_csv(data_path)
-data = df.values[:, :-1]
+data = df.values[:, 1:]
 
 model = load_model(path)
 
@@ -32,7 +32,7 @@ except FileNotFoundError:
 len_list = [250, 500, 750, 1000, 1250, 1500, 1750, 2000]
 for min_len in len_list:
     start_time = time.time()
-    all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model, decay=0.1,
+    all_id = FEDIG.individual_discrimination_generation('credit', config.Credit, model, decay=0.2,
                                                         c_num=4, min_len=min_len, delta1=0.1, delta2=0.2)
     end_time = time.time()
     execution_time = end_time - start_time
