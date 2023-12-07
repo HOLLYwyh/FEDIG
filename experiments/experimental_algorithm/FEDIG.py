@@ -94,7 +94,13 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
     x = cluster_data['X']
-    labels = cluster_data['cluster_labels']
+    original_labels = cluster_data['cluster_labels']
+
+    # We use 1,000 instances when the number of dataset exceeds 1000.
+    if len(original_labels) > 1000:
+        labels = random.sample(list(original_labels), 1000)
+    else:
+        labels = original_labels
 
     num_attrs = len(x[0])
     all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
@@ -102,15 +108,9 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features, delta1, delta2)
 
     all_id = np.empty(shape=(0, num_attrs))
-    original_clusters = [[] for _ in range(c_num)]
+    clusters = [[] for _ in range(c_num)]
     for i, label in enumerate(labels):
-        original_clusters[label].append(x[i])
-
-    # We use 1,000 instances when the number of dataset exceeds 1000.
-    if len(x) > 1000:
-        clusters = [random.sample(row, 250) for row in original_clusters]
-    else:
-        clusters = original_clusters
+        clusters[label].append(x[i])
 
     for i in range(len(clusters)):
         g_id = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint, model,
