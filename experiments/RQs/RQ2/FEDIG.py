@@ -61,10 +61,8 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, opti
                 potential_x1_list.extend(FEDIG_utils.get_potential_global_x(x1, direction, optimal_features, constraint, s_g))
             potential_x_list = np.array(list(set([tuple(i) for i in potential_x1_list])))
 
-    global_num = len(g_id)
     g_id = np.array(list(set([tuple(i) for i in g_id])))
-    global_n_d_num = len(g_id)
-    return g_id, global_num, global_n_d_num
+    return g_id
 
 
 # local generation of FEDIG
@@ -89,10 +87,8 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
             if utils.is_discriminatory(x, similar_x_set, model):
                 l_id = np.append(l_id, [x], axis=0)
 
-    local_num = len(l_id)
     l_id = np.array(list(set([tuple(i) for i in l_id])))
-    local_d_n_num = len(l_id)
-    return l_id, local_num, local_d_n_num
+    return l_id
 
 
 # complete IDI generation of FEDIG
@@ -103,12 +99,6 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     start_time = time.time()
     global_time = 0.0
     local_time = 0.0
-    all_num = 0
-    global_num = 0
-    local_num = 0
-    all_non_d_num = 0
-    global_non_d_num = 0
-    local_non_d_num = 0
 
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
@@ -133,19 +123,15 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
 
     for i in range(len(clusters)):
         global_s = time.time()
-        g_id, g_num, g_n_d_num = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint,
-                                                   model, optimal_features, decay, max_iter=10, s_g=1.0)
+        g_id = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint, model,
+                                 optimal_features, decay, max_iter=10, s_g=1.0)
         global_e = time.time()
-        global_num += g_num
-        global_non_d_num += g_n_d_num
         global_time += (global_e - global_s)
 
         local_s = time.time()
-        l_id, l_num, l_n_d_num = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint,
-                                                  model, irrelevant_features, decay, s_l=1.0)
+        l_id = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint, model,
+                                irrelevant_features, decay, s_l=1.0)
         local_e = time.time()
-        local_num += l_num
-        local_non_d_num += l_n_d_num
         local_time += (local_e - local_s)
 
         part_id = np.append(g_id, l_id, axis=0)
@@ -157,12 +143,7 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     logger.set_total_time(end_time - start_time)
     logger.set_global_time(global_time)
     logger.set_local_time(local_time)
-    logger.set_global_number(global_num)
-    logger.set_local_number(local_num)
-    logger.set_global_non_duplicate_number(global_non_d_num)
-    logger.set_local_non_duplicate_number(local_non_d_num)
-    logger.set_all_non_duplicate_number(len(all_id))
-    logger.set_all_number(global_num + local_num)
+
     return all_id, logger
 
 

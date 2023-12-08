@@ -5,6 +5,7 @@ Algorithm NeuronFair.
 """
 
 import sys
+import time
 import joblib
 import random
 import numpy as np
@@ -13,6 +14,7 @@ from tensorflow import keras
 
 sys.path.append('../..')
 from utils import utils
+from experiments.logfile.InfoLogger import InfoLogger
 
 
 # compute the gradient of NeuronFair
@@ -106,6 +108,12 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, new_mo
 
 # complete IDI generation of NeuronFair
 def individual_discrimination_generation(dataset_name, config, model, c_num=4):
+    # logger Info
+    logger = InfoLogger()
+    start_time = time.time()
+    global_time = 0.0
+    local_time = 0.0
+
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
     x = cluster_data['X']
@@ -132,12 +140,27 @@ def individual_discrimination_generation(dataset_name, config, model, c_num=4):
         clusters[label].append(x[i])
 
     for i in range(len(clusters)):
+        global_s = time.time()
         g_id = global_generation(clusters[i], num_attrs, config.protected_attrs, config.constraint, model, new_model,
                                  neurons, decay=0.5, max_iter=10, s_g=1.0, r_g=1.0, p_r=0.05)
+        global_e = time.time()
+        global_time += (global_e - global_s)
+
+        local_s = time.time()
         l_id = local_generation(num_attrs, g_id, config.protected_attrs, config.constraint, model, new_model,
                                 neurons, decay=0.5, l_num=10, s_l=1.0, r_l=1.0, p_r=0.05, epsilon=1e-6)
+        local_e = time.time()
+        local_time += (local_e - local_s)
+
         part_id = np.append(g_id, l_id, axis=0)
         all_id = np.append(all_id, part_id, axis=0)
 
     all_id = np.array(list(set([tuple(i) for i in all_id])))
-    return all_id
+
+    end_time = time.time()
+    logger.set_total_time(end_time - start_time)
+    logger.set_global_time(global_time)
+    logger.set_local_time(local_time)
+
+    return all_id, logger
+

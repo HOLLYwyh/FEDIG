@@ -14,6 +14,7 @@ from tensorflow import keras
 sys.path.append('../..')
 from utils import utils
 from utils import DICE_utils
+from experiments.logfile.InfoLogger import InfoLogger
 
 
 # compute_grad()
@@ -34,6 +35,9 @@ def compute_grad(x, model, y=None, loss_func=keras.losses.binary_crossentropy):
 # global_generation of DICE
 def global_generation(seeds, num_attrs, protected_attrs, constraint, model, start_time,
                       timeout, max_iter, s_g, epsilon):
+    global_s = time.time()
+    local_time = 0.0
+
     g_id = np.empty(shape=(0, num_attrs))
     g_num = len(seeds)
 
@@ -54,8 +58,12 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, star
             x1, x2 = DICE_utils.global_sample_select(cluster)
 
             if is_idi and (len(cluster) - 1 >= 2):
+                local_s = time.time()
                 l_id = local_generation(x1, num_attrs, protected_attrs, constraint, model,
                                         start_time, timeout, l_num=10, s_l=1.0, epsilon=1e-6)
+                local_e = time.time()
+                local_time += (local_e - local_s)
+
                 g_id = np.append(g_id, l_id, axis=0)
 
             grad1 = compute_grad(x1, model)
@@ -70,7 +78,12 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, star
             x1 = utils.clip(x1, constraint)
 
     g_id = np.array(list(set([tuple(i) for i in g_id])))
-    return g_id
+
+    global_e = time.time()
+    total_time = global_e - global_s
+    global_time = total_time - local_time
+
+    return g_id, global_time, local_time
 
 
 # local_generation of DICE
@@ -106,16 +119,20 @@ def fairness_testing(clusters, num_attrs, protected_attrs, constraint, model, le
     all_id = np.empty(shape=(0, num_attrs))
     inputs = DICE_utils.seed_test_input(clusters, min(max_global, len_x))
     start_time = time.time()
-    g_id = global_generation(inputs, num_attrs, protected_attrs, constraint, model, start_time,
-                             timeout, max_iter, s_g, epsilon)
+    g_id, global_time, local_time = global_generation(inputs, num_attrs, protected_attrs, constraint, model, start_time,
+                                                      timeout, max_iter, s_g, epsilon)
     all_id = np.append(all_id, g_id, axis=0)
 
     all_id = np.array(list(set([tuple(i) for i in all_id])))
-    return all_id
+    return all_id, global_time, local_time
 
 
 # complete IDI generation of DICE
 def individual_discrimination_generation(dataset_name, config, model, c_num=4, timeout=600):
+    # logger Info
+    logger = InfoLogger()
+    start_time = time.time()
+
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
     x = cluster_data['X']
@@ -127,6 +144,13 @@ def individual_discrimination_generation(dataset_name, config, model, c_num=4, t
     for i, label in enumerate(labels):
         clusters[label].append(x[i])
 
-    all_id = fairness_testing(clusters, num_attrs, config.protected_attrs, config.constraint, model, len_x,
-                              timeout, max_global=1000, max_iter=10, s_g=1.0, epsilon=0.025)
-    return all_id
+    all_id, global_time, local_time = fairness_testing(clusters, num_attrs, config.protected_attrs, config.constraint,
+                                                       model, len_x, timeout, max_global=1000, max_iter=10, s_g=1.0,
+                                                       epsilon=0.025)
+
+    end_time = time.time()
+    logger.set_total_time(end_time - start_time)
+    logger.set_global_time(global_time)
+    logger.set_local_time(local_time)
+
+    return all_id, logger
