@@ -1,17 +1,12 @@
 import sys
 import time
-import numpy as np
 import pandas as pd
-import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras.models import load_model
 
 sys.path.append('..')
-from experimental_algorithm import FEDIG, ADF, EIDIG, NeuronFair, DICE
+from experiments.RQs.RQ2 import EIDIG
 # from baseline import ADF, DICE, NeuronFair
 from utils import config
-from utils import FEDIG_utils
-from utils import utils
 
 # credit
 # path = '../models/trained_models/credit_model.h5'

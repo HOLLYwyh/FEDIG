@@ -5,13 +5,15 @@ Algorithm ADF.
 """
 
 import sys
+import time
 import random
 import joblib
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-sys.path.append('..')
+sys.path.append('../..')
 from utils import utils
+from experiments.logfile.InfoLogger import InfoLogger
 
 
 # compute the gradient of loss function w.r.t input attributes
@@ -53,7 +55,10 @@ def global_generation(seeds, y_real, num_attrs, protected_attrs, constraint, mod
                     direction[attr] = sign_grad1[attr]
             x1 = x1 + direction * s_g
             x1 = utils.clip(x1, constraint)
+
+    global_num = len(g_id)
     g_id = np.array(list(set([tuple(i) for i in g_id])))
+
     return g_id
 
 

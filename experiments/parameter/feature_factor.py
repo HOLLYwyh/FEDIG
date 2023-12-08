@@ -1,4 +1,8 @@
 """
+    The percentage of biased features and irrelevant features.
+    The values of factors (biased, irrelevant) can be:
+    (0.10, 0.10), (0.10,0.15), (0.10,0.20), (0.15,0.15), (0.15, 0.20), (0.20, 0.20)
+"""
 
 import sys
 import time
@@ -16,11 +20,7 @@ data_path = '../datasets/credit'
 df = pd.read_csv(data_path)
 data = df.values[:, 1:]
 
-model = load_model(path)    The percentage of biased features and irrelevant features.
-    The values of factors (biased, irrelevant) can be:
-    (0.10, 0.10), (0.10,0.15), (0.10,0.20), (0.15,0.15), (0.15, 0.20), (0.20, 0.20)
-"""
-
+model = load_model(path)
 
 # save the logging data
 file_path = 'logfile/parameter/feature_factor.csv'

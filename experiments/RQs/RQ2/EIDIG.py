@@ -9,7 +9,7 @@ import random
 import joblib
 import numpy as np
 import tensorflow as tf
-sys.path.append('..')
+sys.path.append('../..')
 from utils import utils
 
 
