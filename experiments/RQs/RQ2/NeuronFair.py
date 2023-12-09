@@ -12,7 +12,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
-sys.path.append('../..')
+sys.path.append('..')
 from utils import utils
 from experiments.logfile.InfoLogger import InfoLogger
 

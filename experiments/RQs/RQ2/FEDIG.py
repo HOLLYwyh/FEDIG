@@ -11,7 +11,7 @@ import random
 import numpy as np
 import tensorflow as tf
 
-sys.path.append('../..')
+sys.path.append('..')
 
 from utils import utils
 from utils import FEDIG_utils
@@ -92,8 +92,8 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 
 # complete IDI generation of FEDIG
-def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
-                                         c_num=4, min_len=1000, delta1=0.10, delta2=0.20):
+def individual_discrimination_generation(dataset_name, config, model, decay=0.1,
+                                         c_num=4, min_len=250, delta1=0.10, delta2=0.20):
     # logger Info
     logger = InfoLogger()
     start_time = time.time()
