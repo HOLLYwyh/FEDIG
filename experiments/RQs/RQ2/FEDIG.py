@@ -1,5 +1,6 @@
 """
 Algorithm FEDIG.
+- RQ2.
 - For experimental perspective, we add some print-statement to observe the inside details.
 - If you focus on the algorithm itself, please refer to the version without print-statement at /FEDIG/FEDIG.py.
 """
@@ -78,9 +79,11 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
         x2 = utils.find_idi_pair(x1, similar_x1_set, model)
         grad1 = decay * grad1 + compute_grad(x1, model)
         grad2 = decay * grad2 + compute_grad(x2, model)
+        p = FEDIG_utils.normalization(grad1, grad2, protected_attrs, irrelevant_features, 1e-6)
+        a = utils.random_pick(p)
         grad_sign = np.sign(grad1 + grad2)
 
-        potential_x1_list = FEDIG_utils.get_potential_local_x(x1, grad_sign, irrelevant_features, constraint, s_l)
+        potential_x1_list = FEDIG_utils.get_potential_local_x(x1, grad_sign, a, irrelevant_features, constraint, s_l)
 
         for x in potential_x1_list:
             similar_x_set = utils.get_similar_set(x, num_attrs, protected_attrs, constraint)
@@ -92,7 +95,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 
 # complete IDI generation of FEDIG
-def individual_discrimination_generation(dataset_name, config, model, decay=0.1,
+def individual_discrimination_generation(dataset_name, config, model, decay=0.2,
                                          c_num=4, min_len=250, delta1=0.10, delta2=0.20):
     # logger Info
     logger = InfoLogger()

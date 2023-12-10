@@ -1,5 +1,6 @@
 """
 Algorithm NeuronFair.
+- RQ2.
 - For experimental perspective, we add some print-statement to observe the inside details.
 - If you focus on the algorithm itself, please refer to the version without print-statement at /baseline/NeuronFair.py.
 """

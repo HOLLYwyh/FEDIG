@@ -103,16 +103,18 @@ def get_potential_global_x(x, direction, features, constraint, s_g):
 
 
 # get all the potential x with the irrelevant features
-def get_potential_local_x(x, grad_sign, irrelevant_features, constraint, s_l):
+def get_potential_local_x(x, grad_sign, feature, irrelevant_features, constraint, s_l):
     direction = np.zeros_like(x).astype(float)
     potential_x_list = []
     combinations = []
 
     for attr in range(len(direction)):
         if attr in irrelevant_features:
-            options = [direction[attr], direction[attr] + grad_sign[attr]]
+            options = [0, 2 * grad_sign[attr]]
+        elif attr == feature:
+            options = [0, utils.random_pick([0.5, 0.5])]
         else:
-            options = [direction[attr]]
+            options = [0]
         combinations.append(options)
 
     direction_combinations = list(product(*combinations))
@@ -138,3 +140,21 @@ def create_idi_list(x, similar_x_set, model):
             found = True
             idi_list = np.append(idi_list, [x_new], axis=0)
     return found, idi_list
+
+
+# gradient normalization during local search
+def normalization(grad1, grad2, protected_attrs, irrelevant_features, epsilon):
+    gradient = np.zeros_like(grad1)
+    grad1 = np.abs(grad1)
+    grad2 = np.abs(grad2)
+    for i in range(len(gradient)):
+        saliency = grad1[i] + grad2[i]
+        gradient[i] = 1.0 / (saliency + epsilon)
+        if i in protected_attrs:
+            gradient[i] = 0.0
+        elif i in irrelevant_features:
+            gradient[i] = 0.0
+    gradient_sum = np.sum(gradient)
+    probability = gradient / gradient_sum
+    return probability
+
