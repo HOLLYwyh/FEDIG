@@ -1,0 +1,15 @@
+explanation,time,layer
+FEDIG,-,-
+credit,-,-
+"['Purpose_CarOld', 'BalanceCheque']",0.8334286212921143,-
+bank,-,-
+"['poutcome', 'duration']",0.5431206226348877,-
+census,-,-
+['capital-gain'],0.37223315238952637,-
+NeuronFair,-,-
+credit,-,-
+[0 1 0 1],0.37967896461486816,4
+bank,-,-
+[0 0 1 1],3.827300548553467,4
+census,-,-
+[1 1 1 1 1 1 1 0 1 0 0 1 1 0 1 1],3.637119770050049,2

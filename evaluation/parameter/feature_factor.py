@@ -14,7 +14,7 @@ ips_values = [17.65825971, 22.04963912, 27.51289376, 21.75129689, 27.30488667, 3
 fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(7, 9))
 
 # Instance number
-axes[0].plot(x_values, number_values, label='Number')
+axes[0].plot(x_values, number_values, label='Number', marker='s', color='tan')
 axes[0].set_title('Quantity of generated instances')
 axes[0].set_xlabel('percentage')
 axes[0].set_ylabel('Number')
@@ -22,7 +22,7 @@ axes[0].set_xticks(x_values)
 axes[0].legend()
 
 # Time cost
-axes[1].plot(x_values, time_values, label='Time')
+axes[1].plot(x_values, time_values, label='Time', marker='s', color='tan')
 axes[1].set_title('Time cost of generated instances')
 axes[1].set_xlabel('percentage')
 axes[1].set_ylabel('Time(s)')
@@ -30,7 +30,7 @@ axes[1].set_xticks(x_values)
 axes[1].legend()
 
 # Instance per time
-axes[2].plot(x_values, ips_values, label='IPS')
+axes[2].plot(x_values, ips_values, label='IPS', marker='s', color='tan')
 axes[2].set_title('Instances Per Second')
 axes[2].set_xlabel('percentage')
 axes[2].set_ylabel('IPS')
