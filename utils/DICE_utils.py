@@ -52,6 +52,12 @@ def global_sample_select(cluster_dic):
         if len(cluster_dic[i]) > max_len:
             max_len = len(cluster_dic[i])
             max_index = i
-    x1, x2 = random.sample(cluster_dic[max_index], 2)
+
+    if max_len > 1:
+        x1, x2 = random.sample(cluster_dic[max_index], 2)
+    else:
+        index1, index2 = random.sample(cluster_dic.keys(), 2)
+        x1 = cluster_dic[index1][0]
+        x2 = cluster_dic[index2][0]
     return x1, x2
 

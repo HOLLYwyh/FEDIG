@@ -139,17 +139,21 @@ print('DICE begins...')
 df = pd.read_csv(file_path)
 df = df.append(pd.DataFrame({'data': ['DICE'], 'number': ['-'], 'time': ['-'], 'global_time': ['-'],
                              'local_time': ['-']}, index=[0]), ignore_index=True)
-DICE_credit_id, DICE_credit_logger = DICE.individual_discrimination_generation('credit', config.Credit, credit_model)
+DICE_credit_id, DICE_credit_logger = DICE.individual_discrimination_generation('credit', config.Credit, credit_model,
+                                                                               c_num=4, timeout=360)
 df = df.append(pd.DataFrame({'data': ['credit'], 'number': [len(DICE_credit_id)], 'time': [DICE_credit_logger.total_time],
                              'global_time': [DICE_credit_logger.global_time], 'local_time': [DICE_credit_logger.local_time]}, index=[0]), ignore_index=True)
 print(f"==========={DICE_credit_logger.total_time}==========={len(DICE_credit_id)}===========")
+df.to_csv(file_path, index=False)
 
-DICE_bank_id, DICE_bank_logger = DICE.individual_discrimination_generation('bank', config.Bank, bank_model)
+DICE_bank_id, DICE_bank_logger = DICE.individual_discrimination_generation('bank', config.Bank, bank_model,
+                                                                           c_num=4, timeout=150)
 df = df.append(pd.DataFrame({'data': ['bank'], 'number': [len(DICE_bank_id)], 'time': [DICE_bank_logger.total_time],
                              'global_time': [DICE_bank_logger.global_time], 'local_time': [DICE_bank_logger.local_time]}, index=[0]), ignore_index=True)
 print(f"==========={DICE_bank_logger.total_time}==========={len(DICE_bank_id)}===========")
 
-DICE_census_id, DICE_census_logger = DICE.individual_discrimination_generation('census', config.Census, census_model)
+DICE_census_id, DICE_census_logger = DICE.individual_discrimination_generation('census', config.Census, census_model,
+                                                                               c_num=4, timeout=600)
 df = df.append(pd.DataFrame({'data': ['census'], 'number': [len(DICE_census_id)], 'time': [DICE_census_logger.total_time],
                              'global_time': [DICE_census_logger.global_time], 'local_time': [DICE_census_logger.local_time]}, index=[0]), ignore_index=True)
 print(f"==========={DICE_census_logger.total_time}==========={len(DICE_census_id)}===========")
