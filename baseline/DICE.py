@@ -55,7 +55,8 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, star
             if is_idi and (len(cluster) - 1 >= 2):
                 l_id = local_generation(x1, num_attrs, protected_attrs, constraint, model,
                                         start_time, timeout, l_num=10, s_l=1.0, epsilon=1e-6)
-                g_id = np.vstack((g_id, l_id))
+                if l_id.size > 0:
+                    g_id = np.vstack((g_id, l_id))
 
             grad1 = compute_grad(x1, model)
             grad2 = compute_grad(x2, model)

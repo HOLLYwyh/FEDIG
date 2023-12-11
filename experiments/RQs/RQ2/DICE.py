@@ -65,7 +65,8 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, star
                 local_e = time.time()
                 local_time += (local_e - local_s)
 
-                g_id = np.vstack((g_id, l_id))
+                if l_id.size > 0:
+                    g_id = np.vstack((g_id, l_id))
 
             grad1 = compute_grad(x1, model)
             grad2 = compute_grad(x2, model)
