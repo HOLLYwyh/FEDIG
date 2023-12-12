@@ -11,10 +11,11 @@ import joblib
 import random
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.models import load_model
 sys.path.append('..')
 from utils import utils
+from utils import config
 from utils import FEDIG_utils
-from experiments.logfile.InfoLogger import InfoLogger
 
 
 # compute the gradient of model predictions w.r.t. input attributes
@@ -107,14 +108,13 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
                                          c_num=4, min_len=1000, delta1=0.10, delta2=0.20, data_len=1000):
     print(f'FEDIG on dataset {dataset_name} begins...')
-    # logger Info
-    logger = InfoLogger()
     start_time = time.time()
 
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
     x = cluster_data['X']
     original_labels = cluster_data['cluster_labels']
+    data_len = min(data_len, len(original_labels))
     labels = random.sample(list(original_labels), data_len)
 
     num_attrs = len(x[0])
@@ -140,17 +140,44 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     all_id = np.array(list(set([tuple(i) for i in all_id])))
 
     end_time = time.time()
-    logger.set_total_time(end_time - start_time)
+    print(f"total time:{end_time-start_time}")
 
-    return all_id, logger
+    return all_id
 
 
 # use FEDIG to generate individual discriminatory instances and save the instances
+# load models
+credit_model_path = '../models/trained_models/credit_model.h5'
+census_model_path = '../models/trained_models/census_model.h5'
+bank_model_path = '../models/trained_models/bank_model.h5'
+
+# save individual discriminatory instances
+credit_idi_path = './logfile/generated_instances/credit_discriminatory_instance.npy'
+bank_idi_path = './logfile/generated_instances/bank_discriminatory_instance.npy'
+census_idi_path = './logfile/generated_instances/census_discriminatory_instance.npy'
+
+# load models and datasets
+credit_model = load_model(credit_model_path)
+census_model = load_model(census_model_path)
+bank_model = load_model(bank_model_path)
+
 # credit
+# credit_data = individual_discrimination_generation('credit', config.Credit, credit_model, decay=0.2, c_num=4,
+#                                                    min_len=250, delta1=0.1, delta2=0.2, data_len=1000)
+# print(f'length of credit data: {len(credit_data)}')
+# np.save(credit_idi_path, credit_data)
 
 # bank
+# bank_data = individual_discrimination_generation('bank', config.Bank, bank_model, decay=0.2, c_num=4,
+#                                                  min_len=250, delta1=0.15, delta2=0.35, data_len=10000)
+# print(f'length of bank data: {len(bank_data)}')
+# np.save(bank_idi_path, bank_data)
 
 # census
+census_data = individual_discrimination_generation('census', config.Census, census_model, decay=0.2, c_num=4,
+                                                   min_len=250, delta1=0.1, delta2=0.3, data_len=10000)
+print(f'length of census data: {len(census_data)}')
+np.save(census_idi_path, census_data)
 
 
 
