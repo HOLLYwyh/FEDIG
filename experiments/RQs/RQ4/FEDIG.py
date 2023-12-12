@@ -105,8 +105,8 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 # complete IDI generation of FEDIG
 def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
-                                         c_num=4, min_len=1000, delta1=0.10, delta2=0.20):
-
+                                         c_num=4, min_len=1000, delta1=0.10, delta2=0.20, data_len=1000):
+    print(f'FEDIG on dataset {dataset_name} begins...')
     # logger Info
     logger = InfoLogger()
     start_time = time.time()
@@ -115,12 +115,7 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     cluster_data = joblib.load(data_path)
     x = cluster_data['X']
     original_labels = cluster_data['cluster_labels']
-
-    # We use 1,000 instances when the number of dataset exceeds 1000.
-    if len(original_labels) > 1500:
-        labels = random.sample(list(original_labels), 1500)
-    else:
-        labels = original_labels
+    labels = random.sample(list(original_labels), data_len)
 
     num_attrs = len(x[0])
     all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
@@ -148,6 +143,15 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     logger.set_total_time(end_time - start_time)
 
     return all_id, logger
+
+
+# use FEDIG to generate individual discriminatory instances and save the instances
+# credit
+
+# bank
+
+# census
+
 
 
 

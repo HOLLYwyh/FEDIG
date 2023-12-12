@@ -77,7 +77,9 @@ for i, dataset in enumerate(datasets):
     print(dataset_names[i] + ':', score)
     joblib.dump(model, '../models/ensemble_models/' + dataset_names[i] + '_ensemble.pkl')
 
-
+# credit model: 0.7550
+# bank model: 0.8980
+# census model: 0.8320
 
 
 
