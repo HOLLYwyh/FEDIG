@@ -86,10 +86,11 @@ def global_generation(seeds, num_attrs, protected_attrs, constraint, model, star
     l_nd_num = len(all_id)
     g_num = len(g_id)
     g_id = np.array(list(set([tuple(i) for i in g_id])))
+    g_nd_num = len(g_id)
     if g_id.size > 0:
         all_id = np.vstack((all_id, g_id))
     all_id = np.array(list(set([tuple(i) for i in all_id])))
-    return all_id, len(all_id), g_num, l_nd_num, l_number
+    return all_id, g_nd_num, g_num, l_nd_num, l_number
 
 
 # local_generation of DICE
