@@ -77,6 +77,17 @@ python .\parameter\eta.py
 
 # 1.2 min_len of FEDIG
 python .\parameter\min_len.py
+
+
+#  If you want to check the results of these two experiments, 
+#  please switch to the '/evaluation' folder and execute the following commands 
+
+# evaluate eta (η) of FEDIG
+python .\parameter\eta.py
+
+# evaluate min_len of FEDIG
+python .\parameter\min_len.py
+
 ```
 -  Second, we compare our algorithm FEDIG with baselines in four aspects.  
 We use four RQs to evaluate our algorithm, every RQ has some related experiments.
@@ -85,26 +96,72 @@ We use four RQs to evaluate our algorithm, every RQ has some related experiments
     - RQ3: How to explain the unfairness of DNNs with biased features identified by FEDIG?
     - RQ4: How useful are the generated test instances for improving the fairness of the DNN model?
 
-1. RQ1: How effective is FEDIG in generating individual discriminatory instance?  
+
+(1). RQ1: How effective is FEDIG in generating individual discriminatory instance?  
 ```shell
-# We calculate GSR, time cost of four baselines and FEDIG on three datasets
-# Plw
-```
+# We calculate GSR, time cost of four baselines and FEDIG on three datasets.
+# Please make sure that you are at path : /experiments
 
-2. RQ2: How efficient is FEDIG in generating individual discriminatory instances?  
+# Run the RQ1 command:
+python .\RQs\RQ1\RQ1_Effectiveness.py
+```  
+
+(2). RQ2: How efficient is FEDIG in generating individual discriminatory instances?
 ```shell
+# We calculate the number of generated individual discriminatory instances per 1000 seconds.
+# Please make sure that you are at path : /experiments
 
+# Run the RQ2 command:
+python .\RQs\RQ2\RQ2_Efficiency.py
 ```
-3. RQ3: How to explain the unfairness of DNNs with biased features identified by FEDIG?  
+
+(3). RQ3: How to explain the unfairness of DNNs with biased features identified by FEDIG?  
 ```shell
+# We use FEDIG to identify biased features to explain the discrimination of DNN models.
+# We also compare the result of FEDIG with NeuronFair.
+# Please make sure that you are at path : /experiments
 
+# Run tje RQ3 command:
+python .\RQs\RQ3\RQ3_Explanation.py
 ```
-4. RQ4: How useful are the generated test instances for improving the fairness of the DNN model?  
+
+
+(4). RQ4: How useful are the generated test instances for improving the fairness of the DNN model?  
 ```shell
+# We first use majority voting to relabel the individual discriminatory instances after generating by FEDIG.
+# Then we retrain the DNN models with some individual discriminatory instances.
+# Please make sure that you are at path : /experiments
 
+# a. majority voting
+python .\RQs\RQ4\RQ4_majority_voting.py
+# b. retrain
+python .\RQs\RQ4\RQ4_retraining.py
 ```
 
 
-## 6. Algorithm Evaluation
+## 5. Algorithm/Model Evaluation
 ```
+Two evaluations of the retrained models.
 ```
+- After the experiments in **Part 4**, we have proved that our algorithm FEDIG is better than the baseline.  
+- Meanwhile, we retrained some DNN models with different percentage of individual discriminatory instances in
+RQ4.
+- We evaluate the models we retrained in this part.
+
+```shell
+# Two evaluations on retrained models.
+# Please make sure that you are at path: /evaluation
+
+# 1. Retrain evaluation
+# Calculate the precision rate, recall rate and F1 score.
+ python .\retrained_models\retrain_evaluation.py
+
+# 2. Fairness evaluation
+# Calculate the percentage of individual discriminatory instances with .95 confidence
+ python .\retrained_models\fairness_evaluation.py
+```
+
+
+**Here are all the instructions. I hope they can be helpful to you.   
+If you have any questions, please feel free to contact me**
+
