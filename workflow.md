@@ -1,7 +1,7 @@
 # Workflow of FEDIG Project
 Welcome to this project, to follow or reproduce this work, please follow this ``workflow.md`` file.  
-First, you need to prepare the environment: ``Python3.6 + Tensorflow2.0``  
-Second, you need to prepare following packages: ``numpy,pandas,jobliob,scikit-learn``
+First, you need to prepare the environment: ``Python3.6 + Tensorflow2.0``.  
+Second, you need to prepare following packages: ``numpy,pandas,jobliob,scikit-learn``.
 
 **Notice: All commands written in this document are on the Windows 11 OS. Commands may vary for different OS.
 Please verify and make appropriate modifications accordingly.**
@@ -163,5 +163,5 @@ RQ4.
 
 
 **Here are all the instructions. I hope they can be helpful to you.   
-If you have any questions, please feel free to contact me**
+If you have any questions, please feel free to contact me.**
 
