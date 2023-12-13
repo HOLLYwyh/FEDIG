@@ -104,50 +104,50 @@ evaluate_discrimination(100, 100, config.Credit, credit_25_retrained_model)
 evaluate_discrimination(100, 100, config.Credit, credit_30_retrained_model)
 
 # bank
-# evaluate_discrimination(100, 100, config.Bank, bank_origin_model)
-# evaluate_discrimination(100, 100, config.Bank, bank_5_retrained_model)
-# evaluate_discrimination(100, 100, config.Bank, bank_10_retrained_model)
-# evaluate_discrimination(100, 100, config.Bank, bank_15_retrained_model)
-# evaluate_discrimination(100, 100, config.Bank, bank_20_retrained_model)
-# evaluate_discrimination(100, 100, config.Bank, bank_25_retrained_model)
-# evaluate_discrimination(100, 100, config.Bank, bank_30_retrained_model)
+evaluate_discrimination(100, 100, config.Bank, bank_origin_model)
+evaluate_discrimination(100, 100, config.Bank, bank_5_retrained_model)
+evaluate_discrimination(100, 100, config.Bank, bank_10_retrained_model)
+evaluate_discrimination(100, 100, config.Bank, bank_15_retrained_model)
+evaluate_discrimination(100, 100, config.Bank, bank_20_retrained_model)
+evaluate_discrimination(100, 100, config.Bank, bank_25_retrained_model)
+evaluate_discrimination(100, 100, config.Bank, bank_30_retrained_model)
 
 # census
-# evaluate_discrimination(100, 100, config.Census, census_origin_model)
-# evaluate_discrimination(100, 100, config.Census, census_5_retrained_model)
-# evaluate_discrimination(100, 100, config.Census, census_10_retrained_model)
-# evaluate_discrimination(100, 100, config.Census, census_15_retrained_model)
-# evaluate_discrimination(100, 100, config.Census, census_20_retrained_model)
-# evaluate_discrimination(100, 100, config.Census, census_25_retrained_model)
-# evaluate_discrimination(100, 100, config.Census, census_30_retrained_model)
+evaluate_discrimination(100, 100, config.Census, census_origin_model)
+evaluate_discrimination(100, 100, config.Census, census_5_retrained_model)
+evaluate_discrimination(100, 100, config.Census, census_10_retrained_model)
+evaluate_discrimination(100, 100, config.Census, census_15_retrained_model)
+evaluate_discrimination(100, 100, config.Census, census_20_retrained_model)
+evaluate_discrimination(100, 100, config.Census, census_25_retrained_model)
+evaluate_discrimination(100, 100, config.Census, census_30_retrained_model)
 
 
 """
     .95 confidence
 1. credit:
-    - original: 0.1948 ± 0.007214717136520323
-    - 5%:       0.10309999999999998 ± 0.005678556703952158
-    - 10%:      0.10469999999999999 ± 0.005477174322586419
-    - 15%:      0.0787 ± 0.005278589675282593
-    - 20%:      0.1506 ± 0.005988882553532003
-    - 25%:      0.1029 ± 0.005187857499970485
-    - 30%:      0.08839999999999999 ± 0.005123966338687247
+    - original: 0.1925 ± 0.008344974775276437
+    - 5%:       0.0983 ± 0.005788175684963269
+    - 10%:      0.10649999999999998 ± 0.006106744795715636
+    - 15%:      0.0754 ± 0.005030904236814691
+    - 20%:      0.1462 ± 0.006720142331826015
+    - 25%:      0.10069999999999998 ± 0.006017263843309515
+    - 30%:      0.0883 ± 0.006129851038973133
 2. bank:
-    - original: 
-    - 5%:
-    - 10%:
-    - 15%:
-    - 20%:
-    - 25%:
-    - 30%:
+    - original: 0.1146 ± 0.006746614961593703
+    - 5%:       0.0438 ± 0.003828577929205569
+    - 10%:      0.0447 ± 0.004096868872688018
+    - 15%:      0.0424 ± 0.003871880659317898
+    - 20%:      0.0385 ± 0.003443971544597894
+    - 25%:      0.0382 ± 0.0035321353541448554
+    - 30%:      0.0326 ± 0.004022729898961649
 3. census:
-    - original: 
-    - 5%:
-    - 10%:
-    - 15%:
-    - 20%:
-    - 25%:
-    - 30%:
+    - original: 0.4584 ± 0.010819910121623009
+    - 5%:       0.42749999999999994 ± 0.009319279585890747
+    - 10%:      0.336 ± 0.008421160015104807
+    - 15%:      0.31789999999999996 ± 0.009789390657237046
+    - 20%:      0.2711 ± 0.009100375192265427
+    - 25%:      0.2631 ± 0.008084590171431079
+    - 30%:      0.29200000000000004 ± 0.008659563037474814
 """
 
 

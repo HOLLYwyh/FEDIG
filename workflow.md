@@ -70,20 +70,40 @@ which can prove that our algorithm is actually better than them.
 calculate the average result of them. So if you want to get an accurate result, please run five times (or more) per experiment.**
 
 -  First, we need to conduct some experiments to determine the parameters of our algorithm.
--  Second, we compare our algorithm FEDIG with baselines in five aspects.
-
 ```shell
 # Please make sure that you are at path : /experiments
 # 1.1 eta (η) of FEDIG
 python .\parameter\eta.py
-# 1.2 feature factors of FEDIG
-python .\parameter\feature_factor.py
-# 1.3 min_len of FEDIG
+
+# 1.2 min_len of FEDIG
 python .\parameter\min_len.py
 ```
-## 5. Retraining
+-  Second, we compare our algorithm FEDIG with baselines in four aspects.  
+We use four RQs to evaluate our algorithm, every RQ has some related experiments.
+    - RQ1: How effective is FEDIG in generating individual discriminatory instance?
+    - RQ2: How efficient is FEDIG in generating individual discriminatory instances?
+    - RQ3: How to explain the unfairness of DNNs with biased features identified by FEDIG?
+    - RQ4: How useful are the generated test instances for improving the fairness of the DNN model?
+
+1. RQ1: How effective is FEDIG in generating individual discriminatory instance?  
+```shell
+# We calculate GSR, time cost of four baselines and FEDIG on three datasets
+# Plw
 ```
+
+2. RQ2: How efficient is FEDIG in generating individual discriminatory instances?  
+```shell
+
 ```
+3. RQ3: How to explain the unfairness of DNNs with biased features identified by FEDIG?  
+```shell
+
+```
+4. RQ4: How useful are the generated test instances for improving the fairness of the DNN model?  
+```shell
+
+```
+
 
 ## 6. Algorithm Evaluation
 ```
