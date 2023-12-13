@@ -68,68 +68,67 @@ bank_model = load_model(bank_model_path)
 
 # retrain begins
 # credit
-# credit_idi = np.load('./logfile/generated_instances/credit_discriminatory_instance.npy')
-# # 5%
-# retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
-#            credit_idi, '5', 32)
-# # 10%
-# retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
-#            credit_idi, '10', 67)
+credit_idi = np.load('./logfile/generated_instances/credit_discriminatory_instance.npy')
+# 5%
+retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
+           credit_idi, '5', 32)
+# 10%
+retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
+           credit_idi, '10', 67)
 # 15%
-# retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
-#            credit_idi, '15', 106)
+retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
+           credit_idi, '15', 106)
 # 20%
-# retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
-#            credit_idi, '20', 150)
-# # 25%
-# retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
-#            credit_idi, '25', 200)
-# # 30%
-# retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
-#            credit_idi, '30', 257)
+retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
+           credit_idi, '20', 150)
+# 25%
+retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
+           credit_idi, '25', 200)
+# 30%
+retraining('credit', config.Credit, credit_model, credit_x_train, credit_x_test, credit_y_train, credit_y_test,
+           credit_idi, '30', 257)
 
-# # bank
-# bank_idi = np.load('./logfile/generated_instances/bank_discriminatory_instance.npy')
-# # 5%
-# retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '5',
-#            1903)
-# # 10%
-# retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '10',
-#            4019)
-# # 15%
-# retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '15',
-#            6383)
-# # 20%
-# retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '20',
-#            9042)
-# # 25%
-# retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '25',
-#            12056)
-# # 30%
-# retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '30',
-#            15501)
+# bank
+bank_idi = np.load('./logfile/generated_instances/bank_discriminatory_instance.npy')
+# 5%
+retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '5',
+           1903)
+# 10%
+retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '10',
+           4019)
+# 15%
+retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '15',
+           6383)
+# 20%
+retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '20',
+           9042)
+# 25%
+retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '25',
+           12056)
+# 30%
+retraining('bank', config.Bank, bank_model, bank_x_train, bank_x_test, bank_y_train, bank_y_test, bank_idi, '30',
+           15501)
 
 # census
-# census_idi = np.load('./logfile/generated_instances/census_discriminatory_instance.npy')
-print(len(census_x_train))
+census_idi = np.load('./logfile/generated_instances/census_discriminatory_instance.npy')
 # 5%
-# retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
-#            census_idi, '5', )
-# # 10%
-# retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
-#            census_idi, '10', )
-# # 15%
-# retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
-#            census_idi, '15', )
-# # 20%
-# retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
-#            census_idi, '20', )
-# # 35%
-# retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
-#            census_idi, '25', )
-# # 30%
-# retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
-#            census_idi, '30', )
+retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
+           census_idi, '5', 2057)
+# 10%
+retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
+           census_idi, '10', 4342)
+# 15%
+retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
+           census_idi, '15', 6896)
+# 20%
+retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
+           census_idi, '20', 9769)
+# 25%
+retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
+           census_idi, '25', 13235)
+# 30%
+retraining('census', config.Census, census_model, census_x_train, census_x_test, census_y_train, census_y_test,
+           census_idi, '30', 17016)
 
 # retrain ends
 
@@ -154,10 +153,10 @@ print(len(census_x_train))
 
 3. census accuracy
     - origin: 0.8282
-    - 5%:
-    - 10%:
-    - 15%:
-    - 20%:
-    - 25%:
-    - 30%:
+    - 5%: 0.8327
+    - 10%: 0.8345
+    - 15%: 0.8348
+    - 20%: 0.8328
+    - 25%: 0.8343
+    - 30%: 0.8340
 """
