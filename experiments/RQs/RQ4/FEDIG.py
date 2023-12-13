@@ -162,16 +162,16 @@ census_model = load_model(census_model_path)
 bank_model = load_model(bank_model_path)
 
 # credit
-# credit_data = individual_discrimination_generation('credit', config.Credit, credit_model, decay=0.2, c_num=4,
-#                                                    min_len=250, delta1=0.1, delta2=0.2, data_len=1000)
-# print(f'length of credit data: {len(credit_data)}')
-# np.save(credit_idi_path, credit_data)
+credit_data = individual_discrimination_generation('credit', config.Credit, credit_model, decay=0.2, c_num=4,
+                                                   min_len=250, delta1=0.1, delta2=0.2, data_len=1000)
+print(f'length of credit data: {len(credit_data)}')
+np.save(credit_idi_path, credit_data)
 
 # bank
-# bank_data = individual_discrimination_generation('bank', config.Bank, bank_model, decay=0.2, c_num=4,
-#                                                  min_len=250, delta1=0.15, delta2=0.35, data_len=10000)
-# print(f'length of bank data: {len(bank_data)}')
-# np.save(bank_idi_path, bank_data)
+bank_data = individual_discrimination_generation('bank', config.Bank, bank_model, decay=0.2, c_num=4,
+                                                 min_len=250, delta1=0.15, delta2=0.35, data_len=10000)
+print(f'length of bank data: {len(bank_data)}')
+np.save(bank_idi_path, bank_data)
 
 # census
 census_data = individual_discrimination_generation('census', config.Census, census_model, decay=0.2, c_num=4,
