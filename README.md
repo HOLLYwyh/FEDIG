@@ -1,7 +1,7 @@
 # FEDIG
 ##  1. Introduction 
 
-This repository includes the source code and models of ***Features based Explainable individual Discriminatory Instances Generator* **(**FEDIG**) in paper "Explainable White-Box Fairness Testing through Input features".
+This repository includes the source code and models of ***Features based Explainable individual Discriminatory Instances Generator***(**FEDIG**) in paper "Explainable White-Box Fairness Testing through Input features".
 
 
 
@@ -25,7 +25,7 @@ Other packages are required:
 
 1.2 Run the examples.
 
-If you want to run some algorithms or experiments, please follow the workflow file ***workflow.md***
+If you want to run some algorithms or experiments, please follow the workflow file ***`workflow.md`***
 
 
 
