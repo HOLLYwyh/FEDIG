@@ -89,7 +89,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 # complete IDI generation of FEDIG
 def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
-                                         c_num=4, min_len=1000, delta1=0.10, delta2=0.20):
+                                         c_num=4, min_len=1000):
 
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
@@ -97,9 +97,9 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     labels = cluster_data['cluster_labels']
 
     num_attrs = len(x[0])
-    all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
-                                                           config.protected_attrs, config.constraint, min_len)
-    irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features, delta1, delta2)
+    all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model, config.protected_attrs,
+                                                           config.constraint, min_len)
+    irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features)
 
     all_id = np.empty(shape=(0, num_attrs))
     clusters = [[] for _ in range(c_num)]

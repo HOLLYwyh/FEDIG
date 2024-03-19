@@ -105,7 +105,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 
 # complete IDI generation of FEDIG
-def individual_discrimination_generation(dataset_name, config, model, decay=0.5, min_len=1000, delta1=0.10, delta2=0.20):
+def individual_discrimination_generation(dataset_name, config, model, decay=0.5, min_len=1000):
     # logger Info
     start_time = time.time()
     logger = InfoLogger()
@@ -117,7 +117,7 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     num_attrs = len(x[0])
     all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
                                                            config.protected_attrs, config.constraint, min_len)
-    irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features, delta1, delta2)
+    irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features)
 
     all_id = np.empty(shape=(0, num_attrs))
     np.random.shuffle(x)

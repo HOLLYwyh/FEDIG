@@ -112,22 +112,19 @@ df = df.append(pd.DataFrame({'data': ['FEDIG'], 'number': ['-'], 'time': ['-'], 
                              'local_time': ['-']}, index=[0]), ignore_index=True)
 
 FEDIG_credit_id, FEDIG_credit_logger = FEDIG.individual_discrimination_generation('credit', config.Credit, credit_model,
-                                                                                  decay=0.2, c_num=4, min_len=250,
-                                                                                  delta1=0.1, delta2=0.2)
+                                                                                  decay=0.2, c_num=4, min_len=250)
 df = df.append(pd.DataFrame({'data': ['credit'], 'number': [len(FEDIG_credit_id)], 'time': [FEDIG_credit_logger.total_time],
                              'global_time': [FEDIG_credit_logger.global_time], 'local_time': [FEDIG_credit_logger.local_time]}, index=[0]), ignore_index=True)
 print(f"==========={FEDIG_credit_logger.total_time}==========={len(FEDIG_credit_id)}===========")
 
 FEDIG_bank_id, FEDIG_bank_logger = FEDIG.individual_discrimination_generation('bank', config.Bank, bank_model, decay=0.2
-                                                                              , c_num=4, min_len=250, delta1=0.15,
-                                                                              delta2=0.35)
+                                                                              , c_num=4, min_len=250)
 df = df.append(pd.DataFrame({'data': ['bank'], 'number': [len(FEDIG_bank_id)], 'time': [FEDIG_bank_logger.total_time],
                              'global_time': [FEDIG_bank_logger.global_time], 'local_time': [FEDIG_bank_logger.local_time]}, index=[0]), ignore_index=True)
 print(f"==========={FEDIG_bank_logger.total_time}==========={len(FEDIG_bank_id)}===========")
 
 FEDIG_census_id, FEDIG_census_logger = FEDIG.individual_discrimination_generation('census', config.Census, census_model,
-                                                                                  decay=0.2, c_num=4, min_len=250,
-                                                                                  delta1=0.1, delta2=0.3)
+                                                                                  decay=0.2, c_num=4, min_len=250)
 df = df.append(pd.DataFrame({'data': ['census'], 'number': [len(FEDIG_census_id)], 'time': [FEDIG_census_logger.total_time],
                              'global_time': [FEDIG_census_logger.global_time], 'local_time': [FEDIG_census_logger.local_time]}, index=[0]), ignore_index=True)
 print(f"==========={FEDIG_census_logger.total_time}==========={len(FEDIG_census_id)}===========")

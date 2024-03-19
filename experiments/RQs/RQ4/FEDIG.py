@@ -106,7 +106,7 @@ def local_generation(num_attrs, g_id, protected_attrs, constraint, model, irrele
 
 # complete IDI generation of FEDIG
 def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
-                                         c_num=4, min_len=1000, delta1=0.10, delta2=0.20, data_len=1000):
+                                         c_num=4, min_len=1000, data_len=1000):
     print(f'FEDIG on dataset {dataset_name} begins...')
     start_time = time.time()
 
@@ -120,7 +120,7 @@ def individual_discrimination_generation(dataset_name, config, model, decay=0.5,
     num_attrs = len(x[0])
     all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
                                                            config.protected_attrs, config.constraint, min_len)
-    irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features, delta1, delta2)
+    irrelevant_features, optimal_features = FEDIG_utils.spilt_biased_features(all_biased_features)
 
     all_id = np.empty(shape=(0, num_attrs))
     clusters = [[] for _ in range(c_num)]
@@ -163,19 +163,19 @@ bank_model = load_model(bank_model_path)
 
 # credit
 credit_data = individual_discrimination_generation('credit', config.Credit, credit_model, decay=0.2, c_num=4,
-                                                   min_len=250, delta1=0.1, delta2=0.2, data_len=1000)
+                                                   min_len=250, data_len=1000)
 print(f'length of credit data: {len(credit_data)}')
 np.save(credit_idi_path, credit_data)
 
 # bank
 bank_data = individual_discrimination_generation('bank', config.Bank, bank_model, decay=0.2, c_num=4,
-                                                 min_len=250, delta1=0.15, delta2=0.35, data_len=10000)
+                                                 min_len=250, data_len=10000)
 print(f'length of bank data: {len(bank_data)}')
 np.save(bank_idi_path, bank_data)
 
 # census
 census_data = individual_discrimination_generation('census', config.Census, census_model, decay=0.2, c_num=4,
-                                                   min_len=250, delta1=0.1, delta2=0.3, data_len=10000)
+                                                   min_len=250, data_len=10000)
 print(f'length of census data: {len(census_data)}')
 np.save(census_idi_path, census_data)
 

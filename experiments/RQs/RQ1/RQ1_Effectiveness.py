@@ -145,7 +145,7 @@ df = df.append(pd.DataFrame({'data': ['FEDIG'], 'all_num': ['-'], 'all_nd_num': 
                              'l_num': ['-'], 'l_nd_num': ['-'], 'time': ['-']},
                             index=[0]), ignore_index=True)
 FEDIG_credit_logger = FEDIG.individual_discrimination_generation('credit', config.Credit, credit_model, decay=0.2,
-                                                               min_len=250, delta1=0.1, delta2=0.2)
+                                                               min_len=250)
 df = df.append(pd.DataFrame({'data': ['credit'], 'all_num': [FEDIG_credit_logger.all_number], 'all_nd_num': [FEDIG_credit_logger.all_non_duplicate_number],
                              'g_num': [FEDIG_credit_logger.global_number], 'g_nd_num': [FEDIG_credit_logger.global_non_duplicate_number],
                              'l_num': [FEDIG_credit_logger.local_number], 'l_nd_num': [FEDIG_credit_logger.local_non_duplicate_number], 'time': [FEDIG_credit_logger.total_time]},
@@ -155,7 +155,7 @@ print(f"==========={FEDIG_credit_logger.all_non_duplicate_number}==========={FED
 
 
 FEDIG_bank_logger = FEDIG.individual_discrimination_generation('bank', config.Bank, bank_model, decay=0.2,
-                                                               min_len=250, delta1=0.15, delta2=0.35)
+                                                               min_len=250)
 df = df.append(pd.DataFrame({'data': ['bank'], 'all_num': [FEDIG_bank_logger.all_number], 'all_nd_num': [FEDIG_bank_logger.all_non_duplicate_number],
                              'g_num': [FEDIG_bank_logger.global_number], 'g_nd_num': [FEDIG_bank_logger.global_non_duplicate_number],
                              'l_num': [FEDIG_bank_logger.local_number], 'l_nd_num': [FEDIG_bank_logger.local_non_duplicate_number], 'time': [FEDIG_bank_logger.total_time]},
@@ -164,7 +164,7 @@ print(f"==========={FEDIG_bank_logger.all_non_duplicate_number}==========={FEDIG
       f"==========={FEDIG_bank_logger.total_time}===========")
 
 FEDIG_census_logger = FEDIG.individual_discrimination_generation('census', config.Census, census_model, decay=0.2,
-                                                               min_len=250, delta1=0.1, delta2=0.3)
+                                                               min_len=250)
 df = df.append(pd.DataFrame({'data': ['census'], 'all_num': [FEDIG_census_logger.all_number], 'all_nd_num': [FEDIG_census_logger.all_non_duplicate_number],
                              'g_num': [FEDIG_census_logger.global_number], 'g_nd_num': [FEDIG_census_logger.global_non_duplicate_number],
                              'l_num': [FEDIG_census_logger.local_number], 'l_nd_num': [FEDIG_census_logger.local_non_duplicate_number], 'time': [FEDIG_census_logger.total_time]},
