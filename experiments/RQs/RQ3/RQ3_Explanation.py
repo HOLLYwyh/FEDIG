@@ -8,7 +8,7 @@ import pandas as pd
 import FEDIG
 import NeuronFair
 
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 sys.path.append('..')
 from utils import config

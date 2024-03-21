@@ -11,7 +11,7 @@ import NeuronFair
 import DICE
 import FEDIG
 
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 sys.path.append('..')
 from utils import config
