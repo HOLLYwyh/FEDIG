@@ -1,5 +1,5 @@
 """
-- RQ4
+- RQ5
 - This file use majority voting for relabeling.
 - We use five classifiers are trained for majority voting, including KNN, Naive Bayes, MLP, Random Forest, RBF SVM.
 """
