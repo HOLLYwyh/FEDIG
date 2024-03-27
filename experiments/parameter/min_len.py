@@ -6,7 +6,7 @@ This paper will determine the parameter min_len through experiments.
 import sys
 import time
 import pandas as pd
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 sys.path.append('..')
 from FEDIG import FEDIG

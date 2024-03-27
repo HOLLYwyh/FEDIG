@@ -11,7 +11,7 @@ import joblib
 import random
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 sys.path.append('..')
 from utils import utils
 from utils import config

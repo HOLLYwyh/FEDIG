@@ -4,7 +4,7 @@
 
 import sys
 import numpy as np
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 sys.path.append('../')
 from utils import config
 from utils import utils

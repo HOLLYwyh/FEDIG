@@ -6,7 +6,7 @@
 import itertools
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import Model
+from keras.models import Model
 
 
 # return all similar inputs which only different from the protected attributes
