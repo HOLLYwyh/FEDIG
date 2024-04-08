@@ -16,7 +16,7 @@ from utils import FEDIG_utils
 
 
 # find the biased feature.
-def find_biased_features(dataset_name, config, model, min_len):
+def find_irrelevant_biased_features(dataset_name, config, model, min_len):
     start_time = time.time()
     data_path = '../clusters/' + dataset_name + '.pkl'
     cluster_data = joblib.load(data_path)
@@ -25,7 +25,9 @@ def find_biased_features(dataset_name, config, model, min_len):
     num_attrs = len(x[0])
     all_biased_features = FEDIG_utils.sort_biased_features(x, num_attrs, model,
                                                            config.protected_attrs, config.constraint, min_len)
+    irrelevant_features, biased_features = FEDIG_utils.spilt_biased_features(all_biased_features)
+
     end_time = time.time()
     execute_time = end_time - start_time
 
-    return all_biased_features, execute_time
+    return irrelevant_features, biased_features, execute_time

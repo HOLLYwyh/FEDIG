@@ -1,12 +1,18 @@
 """
-This file will implement the algorithm FEDIG for graphs, feature base explainable.
+Algorithm FEDIG.
+- RQ5
+- For experimental perspective, we add some print-statement to observe the inside details.
+- If you focus on the algorithm itself, please refer to the version without print-statement at /FEDIG/FEDIG_img.py.
 """
 
 import os
 import sys
 import cv2
+import random
+import logging
 import numpy as np
 import tensorflow as tf
+from keras.models import load_model
 
 sys.path.append('..')
 from utils import FEDIG_img_utils
@@ -95,14 +101,23 @@ def local_generation(g_id, img_shape, model, bbox, irrelevant_features, decay, s
 
 # complete IDI generation of FEDIG
 def cnn_idi_generation(file_names, model, image_path, dsize, decay=0.5):
+    logging.info('Start................')
     img_shape = (0,) + load_image(image_path, file_names[0], dsize).shape
     all_id = np.empty(shape=img_shape)
 
+    num = 0
     for file_name in file_names:
+        num += 1
+        logging.info(f"Current file_num: {num}...........")
+        logging.info(f"Current generated num: {len(all_id)}...........")
+
         img = load_image(image_path, file_name, dsize)
         bbox = get_protected_features(img)
         if len(bbox) == 0:
+            num -= 1
             continue
+        if num == 30:
+            break
         img = cv2.normalize(img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
         # calculate biased features and irrelevant features
@@ -114,7 +129,46 @@ def cnn_idi_generation(file_names, model, image_path, dsize, decay=0.5):
 
         part_id = np.append(g_id, l_id, axis=0)
         all_id = np.append(all_id, part_id, axis=0)
+        all_id = np.append(all_id, g_id, axis=0)
 
     all_id = np.unique(all_id, axis=0)
+    logging.info(f"Final generated nd num: {len(all_id)}................")
 
     return all_id
+
+
+# use FEDIG to generate individual discriminatory instances and save the instances
+# load models
+celeba_model_path = '../models/trained_models/celeba_model.h5'
+ff_model_path = '../models/trained_models/FairFace_model.h5'
+
+# save individual discriminatory instances
+celeba_idi_path = './logfile/generated_instances/celeba_discriminatory_instance.npy'
+ff_idi_path = './logfile/generated_instances/ff_discriminatory_instance.npy'
+
+# load models
+celeba_model = load_model(celeba_model_path)
+ff_model = load_model(ff_model_path)
+
+# load instances
+instance_num = 1000
+ca_image_path = '../datasets/celebA/img_align_celeba/'
+ff_image_path = '../datasets/FairFace/val/'
+ca_file_names = np.array(random.sample(os.listdir(ca_image_path), instance_num))
+ff_file_names = np.array(
+    random.sample(sorted(os.listdir(ff_image_path), key=lambda x: int(x.split('.')[0])), instance_num))
+
+# celeba
+logging.basicConfig(filename='celeba.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+celeba_data = cnn_idi_generation(ca_file_names, celeba_model, ca_image_path, (256, 256), decay=0.5)
+print(f'length of celeba data: {len(celeba_data)}')
+np.save(celeba_idi_path, celeba_data)
+logging.info("=========ca saved..=========")
+
+
+# FairFace
+logging.basicConfig(filename='FairFace.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+ff_data = cnn_idi_generation(ff_file_names, ff_model, ff_image_path, (224, 224), decay=0.5)
+print(f'length of ff data: {len(ff_data)}')
+np.save(ff_idi_path, ff_data)
+logging.info("=========ff saved..=========")

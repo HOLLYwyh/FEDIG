@@ -1,15 +1,18 @@
 explanation,time,layer
 FEDIG,-,-
 credit,-,-
-"['Purpose_CarOld', 'BalanceCheque']",0.8334286212921143,-
+['Purpose_CarOld'],0.3920559883117676,-
+"['job_skilledVsMgt', 'jobs_unskilledVsMgt', 'house_ownsVsFree', 'ForeignWorker']",0.3920559883117676,-
 bank,-,-
-"['poutcome', 'duration']",0.5431206226348877,-
+"['poutcome', 'duration', 'default']",0.35111474990844727,-
+"['month', 'marital', 'day']",0.35111474990844727,-
 census,-,-
-['capital-gain'],0.37223315238952637,-
+"['native-country', 'education-num', 'relationship']",1.4041543006896973,-
+"['workclass', 'occupation']",1.4041543006896973,-
 NeuronFair,-,-
 credit,-,-
-[0 1 0 1],0.37967896461486816,4
+[0 1 0 1],0.44591259956359863,4
 bank,-,-
-[0 0 1 1],3.827300548553467,4
+[0 0 1 1],6.634364604949951,4
 census,-,-
-[1 1 1 1 1 1 1 0 1 0 0 1 1 0 1 1],3.637119770050049,2
+[1 1 1 1 1 1 1 0 1 0 0 1 1 0 1 1],6.934003829956055,2

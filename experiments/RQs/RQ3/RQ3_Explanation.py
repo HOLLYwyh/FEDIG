@@ -43,34 +43,44 @@ census_features = ["age", "workclass", "fnlwgt", "education-num", "marital-statu
                    "race", "sex", "capital-gain", "capital-loss", "hours-per-week", "native-country"]
 
 # FEDIG
-credit_biased_list, credit_time = FEDIG.find_biased_features('credit', config.Credit, credit_model, 2)
+credit_ir_list, credit_biased_list, credit_time = FEDIG.find_irrelevant_biased_features('credit', config.Credit, credit_model, 2)
+bank_ir_list, bank_biased_list, bank_time = FEDIG.find_irrelevant_biased_features('bank', config.Bank, bank_model, 2)
+census_ir_list, census_biased_list, census_time = FEDIG.find_irrelevant_biased_features('census', config.Census, census_model, 2)
+
 credit_biased_features = []
-for i, value in credit_biased_list:
+credit_ir_features = []
+for i in credit_biased_list:
     credit_biased_features.append(credit_features[i])
+for i in credit_ir_list:
+    credit_ir_features.append(credit_features[i])
 
-bank_biased_list, bank_time = FEDIG.find_biased_features('bank', config.Bank, bank_model, 2)
 bank_biased_features = []
-for i, value in bank_biased_list:
+bank_ir_features = []
+for i in bank_biased_list:
     bank_biased_features.append(bank_features[i])
+for i in bank_ir_list:
+    bank_ir_features.append(bank_features[i])
 
-census_biased_list, census_time = FEDIG.find_biased_features('census', config.Census, census_model, 2)
 census_biased_features = []
-for i, value in census_biased_list:
+census_ir_features = []
+for i in census_biased_list:
     census_biased_features.append(census_features[i])
+for i in census_ir_list:
+    census_ir_features.append(census_features[i])
 
-credit_biased_features = credit_biased_features[: int(0.1 * len(credit_biased_features))]
-bank_biased_features = bank_biased_features[: int(0.15 * len(bank_biased_features))]
-census_biased_features = census_biased_features[: int(0.1 * len(census_biased_features))]
 
 df = df.append(pd.DataFrame({'explanation': ['FEDIG'], 'time': ['-'], 'layer': ['-']}, index=[0]), ignore_index=True)
 df = df.append(pd.DataFrame({'explanation': ['credit'], 'time': ['-'], 'layer': ['-']}, index=[0]), ignore_index=True)
 df = df.append(pd.DataFrame({'explanation': [credit_biased_features], 'time': [credit_time], 'layer': ['-']}, index=[0]))
+df = df.append(pd.DataFrame({'explanation': [credit_ir_features], 'time': [credit_time], 'layer': ['-']}, index=[0]))
 
 df = df.append(pd.DataFrame({'explanation': ['bank'], 'time': ['-'], 'layer': ['-']}, index=[0]), ignore_index=True)
 df = df.append(pd.DataFrame({'explanation': [bank_biased_features], 'time': [bank_time], 'layer': ['-']}, index=[0]))
+df = df.append(pd.DataFrame({'explanation': [bank_ir_features], 'time': [bank_time], 'layer': ['-']}, index=[0]))
 
 df = df.append(pd.DataFrame({'explanation': ['census'], 'time': ['-'], 'layer': ['-']}, index=[0]), ignore_index=True)
 df = df.append(pd.DataFrame({'explanation': [census_biased_features], 'time': [census_time], 'layer': ['-']}, index=[0]))
+df = df.append(pd.DataFrame({'explanation': [census_ir_features], 'time': [census_time], 'layer': ['-']}, index=[0]))
 
 
 # Neuron Fair

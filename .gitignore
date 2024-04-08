@@ -1,7 +1,12 @@
 .idea
 */__pycache__
 *.pyc
+*.log
 */celebA/
 */FairFace/
-celeba_model.h5
-FairFace_model.h5
+FairFace*.pkl
+FairFace*.h5
+celebA*.pkl
+celebA*.h5
+ff*.npy
+celeba*.npy

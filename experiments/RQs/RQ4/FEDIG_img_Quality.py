@@ -1,15 +1,21 @@
 """
-This file will implement the algorithm FEDIG for graphs, feature base explainable.
+Algorithm FEDIG.
+- RQ4
+- For experimental perspective, we add some print-statement to observe the inside details.
+- If you focus on the algorithm itself, please refer to the version without print-statement at /FEDIG/FEDIG_img.py.
 """
 
 import os
 import sys
 import cv2
+import time
+import logging
 import numpy as np
 import tensorflow as tf
 
 sys.path.append('..')
 from utils import FEDIG_img_utils
+from experiments.logfile.InfoLogger import InfoLogger
 
 
 # load image
@@ -60,7 +66,6 @@ def global_generation(img, img_shape, model, bbox, biased_features, decay, s_g):
             if FEDIG_img_utils.is_discriminatory(img1, model, bbox):
                 g_id = np.append(g_id, [img1], axis=0)
 
-    g_id = np.unique(g_id, axis=0)
     return g_id
 
 
@@ -83,26 +88,49 @@ def local_generation(g_id, img_shape, model, bbox, irrelevant_features, decay, s
 
             p = FEDIG_img_utils.normalization(grad1, grad2, bbox, irrelevant_features, 1e-6)
             feature = FEDIG_img_utils.random_pick(p)
-            potential_img_list = FEDIG_img_utils.get_potential_local_img(img1, feature, irrelevant_features, direction, s_l)
+            potential_img_list = FEDIG_img_utils.get_potential_local_img(img1, feature, irrelevant_features, direction,
+                                                                         s_l)
 
             for img in potential_img_list:
                 if FEDIG_img_utils.is_discriminatory(img, model, bbox):
                     l_id = np.append(l_id, [img], axis=0)
 
-    l_id = np.unique(l_id, axis=0)
     return l_id
 
 
 # complete IDI generation of FEDIG
 def cnn_idi_generation(file_names, model, image_path, dsize, decay=0.5):
+    logging.info('Start................')
+    # logger Info
+    start_time = time.time()
+    logger = InfoLogger()
+
     img_shape = (0,) + load_image(image_path, file_names[0], dsize).shape
     all_id = np.empty(shape=img_shape)
+    g_all_id = np.empty(shape=img_shape)
+    l_all_id = np.empty(shape=img_shape)
+    all_num = 0
 
+    num = 0
     for file_name in file_names:
+        num += 1
+        print("===============================")
+        print(f"Current file_num: {num}.......")
+        print(f"Current all_num: {all_num}.......")
+        print("===============================")
+
+        logging.info("===============================")
+        logging.info(f"Current file_num: {num}.......")
+        logging.info(f"Current all_num: {all_num}.......")
+        logging.info("===============================")
+        if all_num >= 2500:
+            break
+
         img = load_image(image_path, file_name, dsize)
         bbox = get_protected_features(img)
         if len(bbox) == 0:
             continue
+
         img = cv2.normalize(img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
         # calculate biased features and irrelevant features
@@ -115,6 +143,19 @@ def cnn_idi_generation(file_names, model, image_path, dsize, decay=0.5):
         part_id = np.append(g_id, l_id, axis=0)
         all_id = np.append(all_id, part_id, axis=0)
 
+        g_all_id = np.append(g_all_id, g_id, axis=0)
+        l_all_id = np.append(l_all_id, l_id, axis=0)
+
+        all_num = len(all_id)
+
     all_id = np.unique(all_id, axis=0)
 
-    return all_id
+    logger.set_all_non_duplicate_number(len(all_id))
+    logger.set_all_number(len(g_all_id) + len(l_all_id))
+    logger.set_global_number(len(g_all_id))
+    logger.set_global_non_duplicate_number(len(np.unique(g_all_id, axis=0)))
+    logger.set_local_number(len(l_all_id))
+    logger.set_local_non_duplicate_number(len(np.unique(l_all_id, axis=0)))
+    logger.set_total_time(time.time() - start_time)
+
+    return logger
