@@ -7,7 +7,7 @@ This repository includes the source code and models of ***Features based Explain
 
 ##  2. Getting Started
 
-1.1 Environment.
+2.1 Environment.
 
 Python3.6 + Tensorflow2.0 or later versions are recommended.
 
@@ -23,7 +23,7 @@ Other packages are required:
 
   
 
-1.2 Run the examples.
+2.2 Run the examples.
 
 If you want to run some algorithms or experiments, please follow the workflow file ***`workflow.md`***
 
